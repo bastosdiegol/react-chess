@@ -1,0 +1,24 @@
+:root {
+  --square-side: 80px;
+}
+
+.chessboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: min-content;
+  border: 5px solid rgb(121, 86, 57);
+  margin: 10px 0 0 10px;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  width: var(--square-side);
+  height: var(--square-side);
+}
+
+.dark {
+  background-color: #b58863;
+}
