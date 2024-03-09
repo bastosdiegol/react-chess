@@ -1,36 +1,55 @@
 import Coords from "./Coords";
 
 /**
- * Chess Piece Interface-like Class.
+ * Chess Piece Class.
  */
 export default class Piece {
   #symbol;
+  #name;
   #position;
 
   /**
    * Creates a new Piece instance.
-   * @param {string} symbol - The name of the piece.
+   * @param {string} symbol - The symbol of the piece.
+   * @param {string} name - The name of the piece.
    * @param {Coords} coords - Piece position coordinates.
    */
-  constructor(symbol, coords) {
+  constructor(symbol, name, coords) {
     this.#symbol = symbol;
+    this.#name = name;
     this.#position = coords;
   }
 
   /**
-   * Get the name of the Piece.
-   * @returns {string} Piece Name.
+   * Get the symbol of the Piece.
+   * @returns {string} Piece symbol.
    */
   get symbol() {
     return this.#symbol;
   }
 
   /**
-   * Set the name of the Piece
-   * @param {string} symbol - Piece name.
+   * Set the symbol of the Piece
+   * @param {string} symbol - Piece symbol.
    */
   set symbol(symbol) {
     this.#symbol = symbol;
+  }
+
+  /**
+   * Get the name of the Piece.
+   * @returns {string} Piece Name.
+   */
+  get name() {
+    return this.#name;
+  }
+
+  /**
+   * Set the name of the Piece
+   * @param {string} name - Piece name.
+   */
+  set name(name) {
+    this.#name = name;
   }
 
   /**

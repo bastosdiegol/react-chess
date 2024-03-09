@@ -22,3 +22,9 @@
 .dark {
   background-color: #b58863;
 }
+
+.piece-img {
+  width: var(--square-side);
+  height: var(--square-side);
+  padding: 10px;
+}
