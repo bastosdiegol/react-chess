@@ -7,6 +7,7 @@ import '../styles/App.css';
 function App() {
 
   var chess = new Chess();
+  chess.newGame();
   const [chessboard, {}] = useState(0);
 
   return (
