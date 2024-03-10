@@ -11,7 +11,8 @@ import bishopBlack from "/assets/bishop-black.svg";
 import queenBlack from "/assets/queen-black.svg";
 import kingBlack from "/assets/king-black.svg";
 import pawnBlack from "/assets/pawn-black.svg";
-import Coords from '../classes/Coords.js';
+import Chess from '../classes/Chess.js';
+import APP_CONSTS from '../constants.js';
 
 /**
    * Component that renders the chess game board.
@@ -20,17 +21,23 @@ import Coords from '../classes/Coords.js';
    */
 export default function Chessboard(props){
 
-    const { chess, playerTurn, selectedPiece, selectPiece } = props;
+    const { chess, setChess } = props;
 
     function selectNewPiece(row, column){
-        selectPiece(new Coords(row, column));
+        const updatedChess = { ...chess };
+        updatedChess.selectedPiece.X = row;
+        updatedChess.selectedPiece.Y = column;
+        updatedChess.playerTurn = updatedChess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE
+        setChess(updatedChess);
     }
 
     return(
         <main>
             <div className='turn-info'>
-                <p><strong>Player Turn:</strong> {playerTurn} Pieces</p>
-                <img src={playerTurn === "White" ? pawnWhite : pawnBlack } alt="Player Turn Image" className="turn-info-img" />
+                <p><strong>Player Turn:</strong> {chess.playerTurn ? "White" : "Black"} Pieces</p>
+                <img src={chess.playerTurn === APP_CONSTS.WHITE ? pawnWhite : pawnBlack } 
+                     alt="Player Turn Image" 
+                     className="turn-info-img" />
             </div>
             <div id="chessboard" className="chessboard">
                 {chess.board.map((row, rowIndex) => (
@@ -38,9 +45,10 @@ export default function Chessboard(props){
                         {row.map((piece, columnIndex) => (
                             <div key={columnIndex} 
                                  className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'dark' : ''} ${
-                                    piece && selectedPiece.X === rowIndex && selectedPiece.Y === columnIndex ? 'selected' : ''}`}
-                                 onClick={piece && ((playerTurn === 'White' && chess.whitePieces.includes(piece)) 
-                                                || (playerTurn === 'Black' && chess.blackPieces.includes(piece)))
+                                    piece && chess.selectedPiece.X === rowIndex 
+                                          && chess.selectedPiece.Y === columnIndex ? 'selected' : ''}`}
+                                 onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
+                                                || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
                                                  ? () => selectNewPiece(rowIndex, columnIndex) : null}>
                                 {piece && <img src={getPieceImg(piece.symbol)} 
                                                alt={`${piece.name} Image`} 
