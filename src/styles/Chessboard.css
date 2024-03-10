@@ -1,5 +1,12 @@
 :root {
   --square-side: 80px;
+  --img-side: 60px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px;
 }
 
 .chessboard {
@@ -7,7 +14,7 @@
   flex-wrap: wrap;
   width: min-content;
   border: 5px solid rgb(121, 86, 57);
-  margin: 10px 0 0 10px;
+  /* margin: 10px 0 0 10px; */
 }
 
 .row {
@@ -17,6 +24,7 @@
 .square {
   width: var(--square-side);
   height: var(--square-side);
+  border: 10px solid transparent;
 }
 
 .dark {
@@ -24,7 +32,22 @@
 }
 
 .piece-img {
-  width: var(--square-side);
-  height: var(--square-side);
-  padding: 10px;
+  position: static;
+  width: var(--img-side);
+  height: var(--img-side);
+}
+
+.turn-info {
+  display: flex;
+  gap: 5px;
+}
+
+.turn-info-img {
+  width: 16px;
+  height: auto;
+}
+
+.selected {
+  border: 5px solid #50c878;
+  padding: 5px;
 }

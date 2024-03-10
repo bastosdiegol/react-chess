@@ -13,7 +13,7 @@ export default class Chess {
     this.board = Array.from({ length: 8 }, () => Array.from({ length: 8 }));
     this.blackPieces = [];
     this.whitePieces = [];
-    console.log(this.board);
+    this.newGame();
   }
 
   newGame() {
