@@ -12,6 +12,7 @@ import queenBlack from "/assets/queen-black.svg";
 import kingBlack from "/assets/king-black.svg";
 import pawnBlack from "/assets/pawn-black.svg";
 import Chess from '../classes/Chess.js';
+import Coords from '../classes/Coords.js';
 import APP_CONSTS from '../constants.js';
 
 /**
@@ -27,17 +28,19 @@ export default function Chessboard(props){
         const updatedChess = { ...chess };
         updatedChess.selectedPiece.X = row;
         updatedChess.selectedPiece.Y = column;
-        updatedChess.playerTurn = updatedChess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE
+        // updatedChess.playerTurn = updatedChess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
+        // updatedChess.board[row][column].movePiece(new Coords(row+1, column+1));
         setChess(updatedChess);
     }
 
     return(
         <main>
             <div className='turn-info'>
-                <p><strong>Turn:</strong> {chess.playerTurn ? "White" : "Black"} Pieces</p>
+                <p><strong>Turn:</strong> </p>
                 <img src={chess.playerTurn === APP_CONSTS.WHITE ? pawnWhite : pawnBlack } 
-                     alt="Player Turn Image" 
-                     className="turn-info-img" />
+                    alt="Player Turn Image" 
+                    className="turn-info-img" />
+                <p>{chess.playerTurn ? "White" : "Black"} Pieces</p>
             </div>
             <div id="chessboard" className="chessboard">
                 {chess.board.map((row, rowIndex) => (
@@ -64,18 +67,18 @@ export default function Chessboard(props){
 
 function getPieceImg(symbol){
     switch (symbol) {
-        case 'r': return rookBlack;
-        case 'n': return knightBlack;
-        case 'b': return bishopBlack;
-        case 'q': return queenBlack;
-        case 'k': return kingBlack;
-        case 'p': return pawnBlack;
-        case 'R': return rookWhite;
-        case 'N': return knightWhite;
-        case 'B': return bishopWhite;
-        case 'Q': return queenWhite;
-        case 'K': return kingWhite;
-        case 'P': return pawnWhite;
+        case APP_CONSTS.ROOK_BLACK: return rookBlack;
+        case APP_CONSTS.KNIGHT_BLACK: return knightBlack;
+        case APP_CONSTS.BISHOP_BLACK: return bishopBlack;
+        case APP_CONSTS.QUEEN_BLACK: return queenBlack;
+        case APP_CONSTS.KING_BLACK: return kingBlack;
+        case APP_CONSTS.PAWN_BLACK: return pawnBlack;
+        case APP_CONSTS.ROOK_WHITE: return rookWhite;
+        case APP_CONSTS.KNIGH_TWHITE: return knightWhite;
+        case APP_CONSTS.BISHOP_WHITE: return bishopWhite;
+        case APP_CONSTS.QUEEN_WHITE: return queenWhite;
+        case APP_CONSTS.KING_WHITE: return kingWhite;
+        case APP_CONSTS.PAWN_WHITE: return pawnWhite;
         default: return null;
     }
 }

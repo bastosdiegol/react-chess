@@ -25,36 +25,39 @@ export default class Chess {
     this.newGame();
   }
 
+  /**
+   * Initializes a new game of chess.
+   */
   newGame() {
     this.blackPieces = [];
     this.whitePieces = [];
 
-    const blackMainPieces = [
-      { symbol: "r", name: "Black Rook" },
-      { symbol: "n", name: "Black Knight" },
-      { symbol: "b", name: "Black Bishop" },
-      { symbol: "q", name: "Black Queen" },
-      { symbol: "k", name: "Black King" },
-      { symbol: "b", name: "Black Bishop" },
-      { symbol: "n", name: "Black Knight" },
-      { symbol: "r", name: "Black Rook" },
+    const BLACK_MAIN_PIECES = [
+      { symbol: APP_CONSTS.ROOK_BLACK, name: "Black Rook" },
+      { symbol: APP_CONSTS.KNIGHT_BLACK, name: "Black Knight" },
+      { symbol: APP_CONSTS.BISHOP_BLACK, name: "Black Bishop" },
+      { symbol: APP_CONSTS.QUEEN_BLACK, name: "Black Queen" },
+      { symbol: APP_CONSTS.KING_BLACK, name: "Black King" },
+      { symbol: APP_CONSTS.BISHOP_BLACK, name: "Black Bishop" },
+      { symbol: APP_CONSTS.KNIGHT_BLACK, name: "Black Knight" },
+      { symbol: APP_CONSTS.ROOK_BLACK, name: "Black Rook" },
     ];
-    const whiteMainPieces = [
-      { symbol: "R", name: "White Rook" },
-      { symbol: "N", name: "White Knight" },
-      { symbol: "B", name: "White Bishop" },
-      { symbol: "Q", name: "White Queen" },
-      { symbol: "K", name: "White King" },
-      { symbol: "B", name: "White Bishop" },
-      { symbol: "N", name: "White Knight" },
-      { symbol: "R", name: "White Rook" },
+    const WHITE_MAIN_PIECES = [
+      { symbol: APP_CONSTS.ROOK_WHITE, name: "White Rook" },
+      { symbol: APP_CONSTS.KNIGH_TWHITE, name: "White Knight" },
+      { symbol: APP_CONSTS.BISHOP_WHITE, name: "White Bishop" },
+      { symbol: APP_CONSTS.QUEEN_WHITE, name: "White Queen" },
+      { symbol: APP_CONSTS.KING_WHITE, name: "White King" },
+      { symbol: APP_CONSTS.BISHOP_WHITE, name: "White Bishop" },
+      { symbol: APP_CONSTS.KNIGH_TWHITE, name: "White Knight" },
+      { symbol: APP_CONSTS.ROOK_WHITE, name: "White Rook" },
     ];
 
     // Set up black main pieces
-    this.setupMainPieces(0, blackMainPieces, "Black");
+    this.setupMainPieces(0, BLACK_MAIN_PIECES, APP_CONSTS.BLACK);
 
     // Set up black pawns
-    this.setupPawns(1, "p", "Black");
+    this.setupPawns(1, APP_CONSTS.PAWN_BLACK, APP_CONSTS.BLACK);
 
     // Set null for rows 2 to 5
     for (let row = 2; row < 6; row++) {
@@ -62,36 +65,50 @@ export default class Chess {
     }
 
     // Set up white pawns
-    this.setupPawns(6, "P", "White");
+    this.setupPawns(6, APP_CONSTS.PAWN_WHITE, APP_CONSTS.WHITE);
 
     // Set up white main pieces
-    this.setupMainPieces(7, whiteMainPieces, "White");
+    this.setupMainPieces(7, WHITE_MAIN_PIECES, APP_CONSTS.WHITE);
   }
 
-  setupMainPieces(row, pieces, color) {
+  /**
+   * Set up the main pieces (rooks, knights, bishops, queen, king) for a given color.
+   * @param {number} row - The row index where the pieces will be set up.
+   * @param {Array<{symbol: string, name: string}>} pieces - Array containing pieces' information.
+   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - The color of the pieces to be set up.
+   */
+  setupMainPieces(row, pieces, team) {
     pieces.forEach((piece, columnIndex) => {
       this.board[row][columnIndex] = new Piece(
         piece.symbol,
         piece.name,
+        team,
         new Coords(row, columnIndex)
       );
-      if (color === "White")
+      if (team === APP_CONSTS.WHITE)
         this.whitePieces.push(this.board[row][columnIndex]);
-      else if (color === "Black")
+      else if (team === APP_CONSTS.BLACK)
         this.blackPieces.push(this.board[row][columnIndex]);
     });
   }
 
-  setupPawns(row, symbol, color) {
+  /**
+   * Set up the pawns for a given color.
+   * @param {number} row - The row index where the pawns will be set up.
+   * @param {string} symbol - The symbol representing the pawns.
+   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - The color of the pawns to be set up.
+   */
+  setupPawns(row, symbol, team) {
     this.board[row].fill().forEach((_, columnIndex) => {
       this.board[row][columnIndex] = new Piece(
         symbol,
-        color + " Pawn",
+        team ? "White Pawn" : "Black Pawn",
+        team,
         new Coords(row, columnIndex)
       );
-      if (color === "White")
+      if (team === APP_CONSTS.WHITE)
         this.whitePieces.push(this.board[row][columnIndex]);
-      else if (color === "Black")
+      else if (team === APP_CONSTS.BLACK)
         this.blackPieces.push(this.board[row][columnIndex]);
     });
   }
