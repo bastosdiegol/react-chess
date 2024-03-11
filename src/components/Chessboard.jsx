@@ -29,8 +29,16 @@ export default function Chessboard(props){
         updatedChess.selectedPiece.X = row;
         updatedChess.selectedPiece.Y = column;
         // updatedChess.playerTurn = updatedChess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
-        // updatedChess.board[row][column].movePiece(new Coords(row+1, column+1));
         setChess(updatedChess);
+    }
+
+    function movePiece(destRow, destColumn){
+        const updatedChess = { ...chess };
+        let moveCheck = updatedChess.board[updatedChess.selectedPiece.X][updatedChess.selectedPiece.Y]
+                            .movePiece(updatedChess.board, new Coords(destRow, destColumn));
+        if(moveCheck){
+            setChess(updatedChess);
+        }
     }
 
     return(
@@ -52,7 +60,8 @@ export default function Chessboard(props){
                                           && chess.selectedPiece.Y === columnIndex ? 'selected' : ''}`}
                                  onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
                                                 || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
-                                                 ? () => selectNewPiece(rowIndex, columnIndex) : null}>
+                                                 ? () => selectNewPiece(rowIndex, columnIndex) 
+                                                 : () => movePiece(rowIndex, columnIndex)}>
                                 {piece && <img src={getPieceImg(piece.symbol)} 
                                                alt={`${piece.name} Image`} 
                                                className='piece-img' />}

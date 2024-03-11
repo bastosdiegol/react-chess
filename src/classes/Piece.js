@@ -77,12 +77,12 @@ export default class Piece {
    * Moves a piece to a new destination.
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    */
-  movePiece(destCoords) {
+  movePiece(board, destCoords) {
     // TODO: code movePiece
-    let fovPass = this.checkFieldOfView(this.position, destCoords);
+    let fovPass = this.checkFieldOfView(board, this.position, destCoords);
     console.log(fovPass);
     // this.checkMovePiece(destCoords);
-    return false;
+    return fovPass;
   }
 
   /**
@@ -99,12 +99,44 @@ export default class Piece {
 
   /**
    * Method that checks whether the path towards final destination square is unobstructed.
-   * @param {Coords} initCoords - Initial coordinates of Piece Movement.
+   * @param {Array<Array<Piece>>} board - Matrix that contains all Chess pieces
+   * @param {Coords} stepCoords - Initial coordinates of Piece Movement.
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    * @returns {boolean} Path is obstructed or not.
    */
-  checkFieldOfView(initCoords, destCoords) {
-    // TODO: code checkFieldOfView
+  checkFieldOfView(board, { ...stepCoords }, destCoords) {
+    // TODO: Override this function for Knight Child Class
+    // Checks if stepCoords equals destCoords
+    if (stepCoords.X === destCoords.X && stepCoords.Y === destCoords.Y) {
+      console.log(1, "checkFieldOfView", false);
+      return false;
+    }
+    do {
+      // Moves towards destCoords
+      if (stepCoords.X > destCoords.X) stepCoords.X--;
+      if (stepCoords.Y > destCoords.Y) stepCoords.Y--;
+      if (stepCoords.X < destCoords.X) stepCoords.X++;
+      if (stepCoords.Y < destCoords.Y) stepCoords.Y++;
+      // stepCoords is not final destination
+      if (stepCoords.X != destCoords.X || stepCoords.Y != destCoords.Y) {
+        // Position is obtructed conditional
+        if (board[stepCoords.X][stepCoords.Y] != null) return false;
+      } else if (
+        stepCoords.X === destCoords.X &&
+        stepCoords.Y === destCoords.Y
+      ) {
+        // Empty Destination Square
+        if (board[stepCoords.X][stepCoords.Y] === null) return true;
+        else if (board[stepCoords.X][stepCoords.Y].#team === this.#team) {
+          // Same team piece holds the destination
+          return false;
+        } else {
+          // Empty slot or opposing team piece
+          return true;
+        }
+      }
+    } while (stepCoords.X !== destCoords.X || stepCoords.Y !== destCoords.Y);
+
     return false;
   }
 }
