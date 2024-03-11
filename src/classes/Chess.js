@@ -7,7 +7,7 @@ import APP_CONSTS from "../constants";
  * @class
  * @property {Array<Array<Piece>>} board - Matrix that contains all Chess pieces
  * @property {APP_CONSTS.WHITE | APP_CONSTS.BLACK} playerTurn - Holds current turn player info
- * @property {Coords} selectedPiece - The currently selected piece's coordinates
+ * @property {Piece} selectedPiece - The selected piece's on the board
  * @property {Piece[]} blackPieces - Array containing all black pieces
  * @property {Piece[]} whitePieces - Array containing all white pieces
  */
@@ -19,7 +19,7 @@ export default class Chess {
   constructor() {
     this.board = Array.from({ length: 8 }, () => Array.from({ length: 8 }));
     this.playerTurn = APP_CONSTS.WHITE;
-    this.selectedPiece = new Coords(null, null);
+    this.selectedPiece = null;
     this.blackPieces = [];
     this.whitePieces = [];
     this.newGame();

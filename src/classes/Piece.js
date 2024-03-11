@@ -58,6 +58,22 @@ export default class Piece {
   }
 
   /**
+   * Get the team of the Piece.
+   * @returns {APP_CONSTS.WHITE | APP_CONSTS.BLACK} Piece Team.
+   */
+  get team() {
+    return this.#team;
+  }
+
+  /**
+   * Set the team of the Piece
+   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - Piece Team.
+   */
+  set team(team) {
+    this.#team = team;
+  }
+
+  /**
    * Get the position coordinates of the Piece.
    * @returns {Coords} Piece position coordinates.
    */
@@ -75,14 +91,40 @@ export default class Piece {
 
   /**
    * Moves a piece to a new destination.
+   * @param {Chess} chess - Chess Game object.
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    */
-  movePiece(board, destCoords) {
+  movePiece(chess, destCoords) {
     // TODO: code movePiece
-    let fovPass = this.checkFieldOfView(board, this.position, destCoords);
-    console.log(fovPass);
+    let losPass = this.hasLineOfSight(chess.board, this.position, destCoords);
+    if (losPass) {
+      let enemyPiece = chess.board[destCoords.X][destCoords.Y];
+      // Remove the enemy piece from the opposing team array
+      if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.WHITE) {
+        chess.whitePieces.splice(
+          chess.whitePieces.findIndex((item) => item === enemyPiece),
+          1
+        );
+      } else if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.BLACK) {
+        chess.blackPieces.splice(
+          chess.blackPieces.findIndex((item) => item === enemyPiece),
+          1
+        );
+      }
+      // Update the board
+      chess.board[destCoords.X][destCoords.Y] = chess.selectedPiece;
+      chess.board[chess.selectedPiece.position.X][
+        chess.selectedPiece.position.Y
+      ] = null;
+      // Update the Piece
+      chess.selectedPiece.position = destCoords;
+      // Clear Selected Piece
+      chess.selectedPiece = null;
+      // Flip Turn
+      chess.playerTurn = chess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
+    }
     // this.checkMovePiece(destCoords);
-    return fovPass;
+    return losPass;
   }
 
   /**
@@ -91,10 +133,10 @@ export default class Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    * @returns {boolean} Movement is possible or not.
    */
-  checkMovePiece(destCoords) {
-    // TODO: code checkMovePiece in children classes
+  isValidMove(destCoords) {
+    // TODO: code isValidMove in children classes
     // console.log(destCoords);
-    throw new Error("checkMovePiece method must be implemented");
+    throw new Error("isValidMove method must be implemented");
   }
 
   /**
@@ -104,11 +146,10 @@ export default class Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    * @returns {boolean} Path is obstructed or not.
    */
-  checkFieldOfView(board, { ...stepCoords }, destCoords) {
+  hasLineOfSight(board, { ...stepCoords }, destCoords) {
     // TODO: Override this function for Knight Child Class
     // Checks if stepCoords equals destCoords
     if (stepCoords.X === destCoords.X && stepCoords.Y === destCoords.Y) {
-      console.log(1, "checkFieldOfView", false);
       return false;
     }
     do {

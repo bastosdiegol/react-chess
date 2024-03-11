@@ -26,17 +26,15 @@ export default function Chessboard(props){
 
     function selectNewPiece(row, column){
         const updatedChess = { ...chess };
-        updatedChess.selectedPiece.X = row;
-        updatedChess.selectedPiece.Y = column;
-        // updatedChess.playerTurn = updatedChess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
+        updatedChess.selectedPiece = updatedChess.board[row][column];
         setChess(updatedChess);
     }
 
     function movePiece(destRow, destColumn){
         const updatedChess = { ...chess };
-        let moveCheck = updatedChess.board[updatedChess.selectedPiece.X][updatedChess.selectedPiece.Y]
-                            .movePiece(updatedChess.board, new Coords(destRow, destColumn));
+        let moveCheck = updatedChess.selectedPiece.movePiece(updatedChess, new Coords(destRow, destColumn));
         if(moveCheck){
+            // Update the chess state
             setChess(updatedChess);
         }
     }
@@ -56,12 +54,13 @@ export default function Chessboard(props){
                         {row.map((piece, columnIndex) => (
                             <div key={columnIndex} 
                                  className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'dark' : ''} ${
-                                    piece && chess.selectedPiece.X === rowIndex 
-                                          && chess.selectedPiece.Y === columnIndex ? 'selected' : ''}`}
+                                    piece && chess.selectedPiece 
+                                          && chess.selectedPiece.position.X === rowIndex 
+                                          && chess.selectedPiece.position.Y === columnIndex ? 'selected' : ''}`}
                                  onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
                                                 || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
                                                  ? () => selectNewPiece(rowIndex, columnIndex) 
-                                                 : () => movePiece(rowIndex, columnIndex)}>
+                                                 : chess.selectedPiece ? () => movePiece(rowIndex, columnIndex) : null}>
                                 {piece && <img src={getPieceImg(piece.symbol)} 
                                                alt={`${piece.name} Image`} 
                                                className='piece-img' />}
