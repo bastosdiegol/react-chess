@@ -34,7 +34,7 @@ export default function Chessboard(props){
     return(
         <main>
             <div className='turn-info'>
-                <p><strong>Player Turn:</strong> {chess.playerTurn ? "White" : "Black"} Pieces</p>
+                <p><strong>Turn:</strong> {chess.playerTurn ? "White" : "Black"} Pieces</p>
                 <img src={chess.playerTurn === APP_CONSTS.WHITE ? pawnWhite : pawnBlack } 
                      alt="Player Turn Image" 
                      className="turn-info-img" />
