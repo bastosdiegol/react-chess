@@ -2,6 +2,7 @@ import Piece from "./Piece";
 import Coords from "./Coords";
 import APP_CONSTS from "../constants";
 import Pawn from "./Pawn";
+import Bishop from "./Bishop";
 
 /**
  * Chess Game "Brain" Class.
@@ -82,12 +83,25 @@ export default class Chess {
    */
   setupMainPieces(row, pieces, team) {
     pieces.forEach((piece, columnIndex) => {
-      this.board[row][columnIndex] = new Piece(
-        piece.symbol,
-        piece.name,
-        team,
-        new Coords(row, columnIndex)
-      );
+      switch (piece.symbol) {
+        case APP_CONSTS.BISHOP_BLACK:
+        case APP_CONSTS.BISHOP_WHITE:
+          this.board[row][columnIndex] = new Bishop(
+            piece.symbol,
+            piece.name,
+            team,
+            new Coords(row, columnIndex)
+          );
+          break;
+        default:
+          this.board[row][columnIndex] = new Piece(
+            piece.symbol,
+            piece.name,
+            team,
+            new Coords(row, columnIndex)
+          );
+          break;
+      }
       if (team === APP_CONSTS.WHITE)
         this.whitePieces.push(this.board[row][columnIndex]);
       else if (team === APP_CONSTS.BLACK)
@@ -130,11 +144,22 @@ export default class Chess {
       this.selectedPiece.position,
       destCoords
     );
-    let isMoveValid = this.selectedPiece.isValidMove(
-      this.board,
-      destCoords,
-      this.specialMove
-    );
+    let isMoveValid;
+    if (this.selectedPiece instanceof Piece) {
+      switch (true) {
+        case this.selectedPiece instanceof Pawn:
+          isMoveValid = this.selectedPiece.isValidMove(
+            this.board,
+            destCoords,
+            this.specialMove
+          );
+          break;
+        default:
+          isMoveValid = this.selectedPiece.isValidMove(this.board, destCoords);
+          break;
+      }
+    }
+
     if (hasLoS && isMoveValid) {
       // En Passant Treatment
       if (

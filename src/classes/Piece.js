@@ -95,6 +95,19 @@ export default class Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    * @returns {boolean} Movement is possible or not.
    */
+  isValidMove(board, destCoords) {
+    // TODO: code isValidMove in children classes
+    throw new Error("isValidMove method must be implemented");
+  }
+
+  /**
+   * Abstract-like Method for Piece Movement.
+   * Each Child of Piece Class must implement this method.
+   * @param {Array<Array<Piece>>} board - Matrix that contains all Chess pieces
+   * @param {Coords} destCoords - Destination coordinates of Piece Movement.
+   * @param {object} specialMove - Object that holds the piece which perfomed special move.
+   * @returns {boolean} Movement is possible or not.
+   */
   isValidMove(board, destCoords, specialMove) {
     // TODO: code isValidMove in children classes
     throw new Error("isValidMove method must be implemented");
