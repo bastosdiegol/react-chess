@@ -99,7 +99,7 @@ function getPieceImg(symbol){
         case APP_CONSTS.KING_BLACK: return kingBlack;
         case APP_CONSTS.PAWN_BLACK: return pawnBlack;
         case APP_CONSTS.ROOK_WHITE: return rookWhite;
-        case APP_CONSTS.KNIGH_TWHITE: return knightWhite;
+        case APP_CONSTS.KNIGHT_WHITE: return knightWhite;
         case APP_CONSTS.BISHOP_WHITE: return bishopWhite;
         case APP_CONSTS.QUEEN_WHITE: return queenWhite;
         case APP_CONSTS.KING_WHITE: return kingWhite;

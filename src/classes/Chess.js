@@ -3,6 +3,7 @@ import Coords from "./Coords";
 import APP_CONSTS from "../constants";
 import Pawn from "./Pawn";
 import Bishop from "./Bishop";
+import Knight from "./Knight";
 
 /**
  * Chess Game "Brain" Class.
@@ -48,12 +49,12 @@ export default class Chess {
     ];
     const WHITE_MAIN_PIECES = [
       { symbol: APP_CONSTS.ROOK_WHITE, name: "White Rook" },
-      { symbol: APP_CONSTS.KNIGH_TWHITE, name: "White Knight" },
+      { symbol: APP_CONSTS.KNIGHT_WHITE, name: "White Knight" },
       { symbol: APP_CONSTS.BISHOP_WHITE, name: "White Bishop" },
       { symbol: APP_CONSTS.QUEEN_WHITE, name: "White Queen" },
       { symbol: APP_CONSTS.KING_WHITE, name: "White King" },
       { symbol: APP_CONSTS.BISHOP_WHITE, name: "White Bishop" },
-      { symbol: APP_CONSTS.KNIGH_TWHITE, name: "White Knight" },
+      { symbol: APP_CONSTS.KNIGHT_WHITE, name: "White Knight" },
       { symbol: APP_CONSTS.ROOK_WHITE, name: "White Rook" },
     ];
 
@@ -84,6 +85,15 @@ export default class Chess {
   setupMainPieces(row, pieces, team) {
     pieces.forEach((piece, columnIndex) => {
       switch (piece.symbol) {
+        case APP_CONSTS.KNIGHT_BLACK:
+        case APP_CONSTS.KNIGHT_WHITE:
+          this.board[row][columnIndex] = new Knight(
+            piece.symbol,
+            piece.name,
+            team,
+            new Coords(row, columnIndex)
+          );
+          break;
         case APP_CONSTS.BISHOP_BLACK:
         case APP_CONSTS.BISHOP_WHITE:
           this.board[row][columnIndex] = new Bishop(
@@ -139,13 +149,21 @@ export default class Chess {
     // Variable that checks if last move special piece needs to be cleared
     let clearSpecial = this.specialMove.piece ? true : false;
     let enemyPiece;
-    let hasLoS = this.selectedPiece.hasLineOfSight(
-      this.board,
-      this.selectedPiece.position,
-      destCoords
-    );
+    // Checks for Line of Sight before moving
+    let hasLoS;
+    if (this.selectedPiece instanceof Knight) {
+      hasLoS = true; // Knight Exception
+    } else {
+      hasLoS = this.selectedPiece.hasLineOfSight(
+        this.board,
+        this.selectedPiece.position,
+        destCoords
+      );
+    }
+    // Checks if the movement is valid - accordingly with each Piece Rule
     let isMoveValid;
     if (this.selectedPiece instanceof Piece) {
+      // Pawn Method override due to En Passant
       switch (true) {
         case this.selectedPiece instanceof Pawn:
           isMoveValid = this.selectedPiece.isValidMove(

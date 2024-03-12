@@ -13,7 +13,7 @@ const APP_CONSTS = {
   KING_BLACK: "k",
   PAWN_BLACK: "p",
   ROOK_WHITE: "R",
-  KNIGH_TWHITE: "N",
+  KNIGHT_WHITE: "N",
   BISHOP_WHITE: "B",
   QUEEN_WHITE: "Q",
   KING_WHITE: "K",

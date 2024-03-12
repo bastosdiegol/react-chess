@@ -121,7 +121,6 @@ export default class Piece {
    * @returns {boolean} Path is obstructed or not.
    */
   hasLineOfSight(board, { ...stepCoords }, destCoords) {
-    // TODO: Override this function for Knight Child Class
     // Checks if stepCoords equals destCoords
     if (
       stepCoords.row === destCoords.row &&
