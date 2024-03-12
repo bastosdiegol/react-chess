@@ -4,6 +4,7 @@ import APP_CONSTS from "../constants";
 import Pawn from "./Pawn";
 import Bishop from "./Bishop";
 import Knight from "./Knight";
+import King from "./King";
 
 /**
  * Chess Game "Brain" Class.
@@ -97,6 +98,15 @@ export default class Chess {
         case APP_CONSTS.BISHOP_BLACK:
         case APP_CONSTS.BISHOP_WHITE:
           this.board[row][columnIndex] = new Bishop(
+            piece.symbol,
+            piece.name,
+            team,
+            new Coords(row, columnIndex)
+          );
+          break;
+        case APP_CONSTS.KING_BLACK:
+        case APP_CONSTS.KING_WHITE:
+          this.board[row][columnIndex] = new King(
             piece.symbol,
             piece.name,
             team,
