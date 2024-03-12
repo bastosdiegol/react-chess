@@ -4,25 +4,24 @@ import APP_CONSTS from "../constants";
 /**
  * Chess Piece Class.
  * @class
+ * @param {string} symbol - The symbol of the piece.
+ * @param {string} name - The name of the piece.
+ * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - Team which the piece belongs.
+ * @param {Coords} position - Piece position coordinates.
  */
 export default class Piece {
-  #symbol;
-  #name;
-  #team;
-  #position;
-
   /**
    * Creates a new Piece instance.
    * @param {string} symbol - The symbol of the piece.
    * @param {string} name - The name of the piece.
-   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - The name of the piece.
+   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - Team which the piece belongs.
    * @param {Coords} coords - Piece position coordinates.
    */
   constructor(symbol, name, team, coords) {
-    this.#symbol = symbol;
-    this.#name = name;
-    this.#team = team;
-    this.#position = coords;
+    this._symbol = symbol;
+    this._name = name;
+    this._team = team;
+    this._position = coords;
   }
 
   /**
@@ -30,7 +29,7 @@ export default class Piece {
    * @returns {string} Piece symbol.
    */
   get symbol() {
-    return this.#symbol;
+    return this._symbol;
   }
 
   /**
@@ -38,7 +37,7 @@ export default class Piece {
    * @param {string} symbol - Piece symbol.
    */
   set symbol(symbol) {
-    this.#symbol = symbol;
+    this._symbol = symbol;
   }
 
   /**
@@ -46,7 +45,7 @@ export default class Piece {
    * @returns {string} Piece Name.
    */
   get name() {
-    return this.#name;
+    return this._name;
   }
 
   /**
@@ -54,7 +53,7 @@ export default class Piece {
    * @param {string} name - Piece name.
    */
   set name(name) {
-    this.#name = name;
+    this._name = name;
   }
 
   /**
@@ -62,7 +61,7 @@ export default class Piece {
    * @returns {APP_CONSTS.WHITE | APP_CONSTS.BLACK} Piece Team.
    */
   get team() {
-    return this.#team;
+    return this._team;
   }
 
   /**
@@ -70,7 +69,7 @@ export default class Piece {
    * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - Piece Team.
    */
   set team(team) {
-    this.#team = team;
+    this._team = team;
   }
 
   /**
@@ -78,7 +77,7 @@ export default class Piece {
    * @returns {Coords} Piece position coordinates.
    */
   get position() {
-    return this.#position;
+    return this._position;
   }
 
   /**
@@ -86,56 +85,18 @@ export default class Piece {
    * @param {Coords} coords - Piece position coordinates.
    */
   set position(coords) {
-    this.#position = coords;
-  }
-
-  /**
-   * Moves a piece to a new destination.
-   * @param {Chess} chess - Chess Game object.
-   * @param {Coords} destCoords - Destination coordinates of Piece Movement.
-   */
-  movePiece(chess, destCoords) {
-    // TODO: code movePiece
-    let losPass = this.hasLineOfSight(chess.board, this.position, destCoords);
-    if (losPass) {
-      let enemyPiece = chess.board[destCoords.X][destCoords.Y];
-      // Remove the enemy piece from the opposing team array
-      if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.WHITE) {
-        chess.whitePieces.splice(
-          chess.whitePieces.findIndex((item) => item === enemyPiece),
-          1
-        );
-      } else if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.BLACK) {
-        chess.blackPieces.splice(
-          chess.blackPieces.findIndex((item) => item === enemyPiece),
-          1
-        );
-      }
-      // Update the board
-      chess.board[destCoords.X][destCoords.Y] = chess.selectedPiece;
-      chess.board[chess.selectedPiece.position.X][
-        chess.selectedPiece.position.Y
-      ] = null;
-      // Update the Piece
-      chess.selectedPiece.position = destCoords;
-      // Clear Selected Piece
-      chess.selectedPiece = null;
-      // Flip Turn
-      chess.playerTurn = chess.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
-    }
-    // this.checkMovePiece(destCoords);
-    return losPass;
+    this._position = coords;
   }
 
   /**
    * Abstract-like Method for Piece Movement.
    * Each Child of Piece Class must implement this method.
+   * @param {Array<Array<Piece>>} board - Matrix that contains all Chess pieces
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    * @returns {boolean} Movement is possible or not.
    */
-  isValidMove(destCoords) {
+  isValidMove(board, destCoords, specialMove) {
     // TODO: code isValidMove in children classes
-    // console.log(destCoords);
     throw new Error("isValidMove method must be implemented");
   }
 
@@ -149,26 +110,32 @@ export default class Piece {
   hasLineOfSight(board, { ...stepCoords }, destCoords) {
     // TODO: Override this function for Knight Child Class
     // Checks if stepCoords equals destCoords
-    if (stepCoords.X === destCoords.X && stepCoords.Y === destCoords.Y) {
+    if (
+      stepCoords.row === destCoords.row &&
+      stepCoords.column === destCoords.column
+    ) {
       return false;
     }
     do {
       // Moves towards destCoords
-      if (stepCoords.X > destCoords.X) stepCoords.X--;
-      if (stepCoords.Y > destCoords.Y) stepCoords.Y--;
-      if (stepCoords.X < destCoords.X) stepCoords.X++;
-      if (stepCoords.Y < destCoords.Y) stepCoords.Y++;
+      if (stepCoords.row > destCoords.row) stepCoords.row--;
+      if (stepCoords.column > destCoords.column) stepCoords.column--;
+      if (stepCoords.row < destCoords.row) stepCoords.row++;
+      if (stepCoords.column < destCoords.column) stepCoords.column++;
       // stepCoords is not final destination
-      if (stepCoords.X != destCoords.X || stepCoords.Y != destCoords.Y) {
+      if (
+        stepCoords.row != destCoords.row ||
+        stepCoords.column != destCoords.column
+      ) {
         // Position is obtructed conditional
-        if (board[stepCoords.X][stepCoords.Y] != null) return false;
+        if (board[stepCoords.row][stepCoords.column] != null) return false;
       } else if (
-        stepCoords.X === destCoords.X &&
-        stepCoords.Y === destCoords.Y
+        stepCoords.row === destCoords.row &&
+        stepCoords.column === destCoords.column
       ) {
         // Empty Destination Square
-        if (board[stepCoords.X][stepCoords.Y] === null) return true;
-        else if (board[stepCoords.X][stepCoords.Y].#team === this.#team) {
+        if (board[stepCoords.row][stepCoords.column] === null) return true;
+        else if (board[stepCoords.row][stepCoords.column].team === this.team) {
           // Same team piece holds the destination
           return false;
         } else {
@@ -176,7 +143,10 @@ export default class Piece {
           return true;
         }
       }
-    } while (stepCoords.X !== destCoords.X || stepCoords.Y !== destCoords.Y);
+    } while (
+      stepCoords.row !== destCoords.row ||
+      stepCoords.column !== destCoords.column
+    );
 
     return false;
   }

@@ -16,25 +16,37 @@ import Coords from '../classes/Coords.js';
 import APP_CONSTS from '../constants.js';
 
 /**
-   * Component that renders the chess game board.
-   * @param {Chess} chess - Chess Class.
-   * @returns {JSX.Element} JSX element that contains the chess game board.
-   */
+ * Component that renders the chess game board.
+ * @param {object} props - Props for the Chessboard component.
+ * @param {Chess} props.chess - Instance of the Chess class.
+ * @param {Function} props.setChess - Function to set the chess state.
+ * @returns {JSX.Element} JSX element that contains the chess game board.
+ */
 export default function Chessboard(props){
 
     const { chess, setChess } = props;
 
+    /**
+     * Function to select a new piece on the board.
+     * @param {number} row - Row index of the selected piece.
+     * @param {number} column - Column index of the selected piece.
+     */
     function selectNewPiece(row, column){
-        const updatedChess = { ...chess };
+        const updatedChess = new Chess();
+        Object.assign(updatedChess, chess);
         updatedChess.selectedPiece = updatedChess.board[row][column];
         setChess(updatedChess);
     }
 
+    /**
+     * Function to move a piece on the board.
+     * @param {number} destRow - Destination row index for the piece.
+     * @param {number} destColumn - Destination column index for the piece.
+     */
     function movePiece(destRow, destColumn){
-        const updatedChess = { ...chess };
-        let moveCheck = updatedChess.selectedPiece.movePiece(updatedChess, new Coords(destRow, destColumn));
-        if(moveCheck){
-            // Update the chess state
+        const updatedChess = new Chess();
+        Object.assign(updatedChess, chess);
+        if(updatedChess.movePiece(new Coords(destRow, destColumn))){
             setChess(updatedChess);
         }
     }
@@ -55,8 +67,8 @@ export default function Chessboard(props){
                             <div key={columnIndex} 
                                  className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'dark' : ''} ${
                                     piece && chess.selectedPiece 
-                                          && chess.selectedPiece.position.X === rowIndex 
-                                          && chess.selectedPiece.position.Y === columnIndex ? 'selected' : ''}`}
+                                          && chess.selectedPiece.position.row === rowIndex 
+                                          && chess.selectedPiece.position.column === columnIndex ? 'selected' : ''}`}
                                  onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
                                                 || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
                                                  ? () => selectNewPiece(rowIndex, columnIndex) 
@@ -73,6 +85,11 @@ export default function Chessboard(props){
     );
 }
 
+/**
+ * Function to get the image URL for a chess piece.
+ * @param {string} symbol - Symbol of the chess piece.
+ * @returns {string|null} URL of the chess piece image or null if not found.
+ */
 function getPieceImg(symbol){
     switch (symbol) {
         case APP_CONSTS.ROOK_BLACK: return rookBlack;

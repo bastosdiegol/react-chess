@@ -10,7 +10,7 @@ export default class Coords {
    * @param {number} column - Piece position on the Y/column axis.
    */
   constructor(row, column) {
-    this.X = row;
-    this.Y = column;
+    this.row = row;
+    this.column = column;
   }
 }

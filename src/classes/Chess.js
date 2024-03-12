@@ -1,6 +1,7 @@
 import Piece from "./Piece";
 import Coords from "./Coords";
 import APP_CONSTS from "../constants";
+import Pawn from "./Pawn";
 
 /**
  * Chess Game "Brain" Class.
@@ -10,6 +11,8 @@ import APP_CONSTS from "../constants";
  * @property {Piece} selectedPiece - The selected piece's on the board
  * @property {Piece[]} blackPieces - Array containing all black pieces
  * @property {Piece[]} whitePieces - Array containing all white pieces
+ * @property {Object} specialMove - Holds last piece that made special move (En Passant)
+ * @property {boolean} pawnDoubleStep - Last move was a pawn two-square advance.
  */
 export default class Chess {
   /**
@@ -22,7 +25,7 @@ export default class Chess {
     this.selectedPiece = null;
     this.blackPieces = [];
     this.whitePieces = [];
-    this.newGame();
+    this.specialMove = { piece: null };
   }
 
   /**
@@ -100,7 +103,7 @@ export default class Chess {
    */
   setupPawns(row, symbol, team) {
     this.board[row].fill().forEach((_, columnIndex) => {
-      this.board[row][columnIndex] = new Piece(
+      this.board[row][columnIndex] = new Pawn(
         symbol,
         team ? "White Pawn" : "Black Pawn",
         team,
@@ -111,5 +114,79 @@ export default class Chess {
       else if (team === APP_CONSTS.BLACK)
         this.blackPieces.push(this.board[row][columnIndex]);
     });
+  }
+
+  /**
+   * Moves the selectedPiece to a new destination.
+   * @param {Coords} destCoords - Destination coordinates of Piece Movement.
+   * @returns {boolean} Move was successful or not.
+   */
+  movePiece(destCoords) {
+    // Variable that checks if last move special piece needs to be cleared
+    let clearSpecial = this.specialMove.piece ? true : false;
+    let enemyPiece;
+    let hasLoS = this.selectedPiece.hasLineOfSight(
+      this.board,
+      this.selectedPiece.position,
+      destCoords
+    );
+    let isMoveValid = this.selectedPiece.isValidMove(
+      this.board,
+      destCoords,
+      this.specialMove
+    );
+    if (hasLoS && isMoveValid) {
+      // En Passant Treatment
+      if (
+        this.selectedPiece instanceof Pawn &&
+        this.specialMove.piece != null &&
+        this.selectedPiece.isMoveEnPassant(
+          this.board,
+          destCoords,
+          this.specialMove.piece
+        )
+      ) {
+        // Get En Passant enemy piece
+        enemyPiece =
+          this.board[
+            this.selectedPiece.team ? destCoords.row + 1 : destCoords.row - 1
+          ][destCoords.column];
+        // Clear enemy position on board
+        this.board[
+          this.selectedPiece.team ? destCoords.row + 1 : destCoords.row - 1
+        ][destCoords.column] = null;
+      } else {
+        // Get Default Enemy piece
+        enemyPiece = this.board[destCoords.row][destCoords.column];
+      }
+      // Remove the enemy piece from the opposing team array
+      if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.WHITE) {
+        this.whitePieces.splice(
+          this.whitePieces.findIndex((item) => item === enemyPiece),
+          1
+        );
+      } else if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.BLACK) {
+        this.blackPieces.splice(
+          this.blackPieces.findIndex((item) => item === enemyPiece),
+          1
+        );
+      }
+      // Update the board reflecting current piece movement
+      this.board[destCoords.row][destCoords.column] = this.selectedPiece;
+      this.board[this.selectedPiece.position.row][
+        this.selectedPiece.position.column
+      ] = null;
+      // Update the Piece Position
+      this.selectedPiece.position = destCoords;
+      // Clear Selected Piece
+      this.selectedPiece = null;
+      // Flip Turn
+      this.playerTurn = this.playerTurn ? APP_CONSTS.BLACK : APP_CONSTS.WHITE;
+      // Clear Special Piece Movement if needed
+      if (clearSpecial) this.specialMove.piece = null;
+      return true;
+    }
+
+    return false;
   }
 }

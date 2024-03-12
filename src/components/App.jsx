@@ -6,9 +6,9 @@ import '../styles/App.css';
 
 function App() {
 
-  const [chess, setChess] = useState(new Chess());
-  // const [playerTurn, setPlayerTurn] = useState(APP_CONSTS.WHITE);
-  // const [selectedPiece, setSelectedPiece] = useState(new Coords(null,null));
+  let theChess = new Chess();
+  theChess.newGame();
+  const [chess, setChess] = useState(theChess);
 
   return (
     <>
