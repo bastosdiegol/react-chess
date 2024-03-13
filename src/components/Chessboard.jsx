@@ -24,7 +24,7 @@ import APP_CONSTS from '../constants.js';
  */
 export default function Chessboard(props){
 
-    const { chess, setChess } = props;
+    const { chess, setChess, theme } = props;
 
     /**
      * Function to select a new piece on the board.
@@ -65,7 +65,7 @@ export default function Chessboard(props){
                     <div key={rowIndex} className="row">
                         {row.map((piece, columnIndex) => (
                             <div key={columnIndex} 
-                                 className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'dark' : ''} ${
+                                 className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'black-square' : 'white-square'} ${
                                     piece && chess.selectedPiece 
                                           && chess.selectedPiece.position.row === rowIndex 
                                           && chess.selectedPiece.position.column === columnIndex ? 'selected' : ''}`}

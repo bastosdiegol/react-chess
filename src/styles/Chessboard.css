@@ -1,6 +1,11 @@
 :root {
   --square-side: 80px;
   --img-side: 60px;
+  --board-border: 5px solid #8b4513;
+  --white-square-color: #f0d9b5;
+  --black-square-color: #b58863;
+  --selected-square-border: 5px solid #50c878;
+  --selected-square-background: #add8e6;
 }
 
 main {
@@ -13,8 +18,7 @@ main {
   display: flex;
   flex-wrap: wrap;
   width: min-content;
-  border: 5px solid rgb(121, 86, 57);
-  /* margin: 10px 0 0 10px; */
+  border: var(--board-border);
 }
 
 .row {
@@ -27,8 +31,12 @@ main {
   border: 10px solid transparent;
 }
 
-.dark {
-  background-color: #b58863;
+.black-square {
+  background-color: var(--black-square-color);
+}
+
+.white-square {
+  background-color: var(--white-square-color);
 }
 
 .piece-img {
@@ -48,6 +56,6 @@ main {
 }
 
 .selected {
-  border: 5px solid #50c878;
+  border: var(--selected-square-border);
   padding: 5px;
 }

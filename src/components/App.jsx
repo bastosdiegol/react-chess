@@ -9,13 +9,12 @@ function App() {
   let theChess = new Chess();
   theChess.newGame();
   const [chess, setChess] = useState(theChess);
+  const [theme, setTheme] = useState("Classic");
 
   return (
     <>
-      <Header />
-      <Chessboard 
-        chess={chess} 
-        setChess={setChess} />
+      <Header theme={theme} setTheme={setTheme} />
+      <Chessboard chess={chess} setChess={setChess} theme={theme} />
     </>
   )
 }
