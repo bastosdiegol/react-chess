@@ -18,6 +18,8 @@ const APP_CONSTS = {
   QUEEN_WHITE: "Q",
   KING_WHITE: "K",
   PAWN_WHITE: "P",
+  CASTLE_LEFT: 0,
+  CASTLE_RIGHT: 1,
 };
 
 export default APP_CONSTS;

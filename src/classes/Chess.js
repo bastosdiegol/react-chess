@@ -191,6 +191,7 @@ export default class Chess {
       // Pawn Method override due to En Passant
       switch (true) {
         case this.selectedPiece instanceof Pawn:
+        case this.selectedPiece instanceof King:
           isMoveValid = this.selectedPiece.isValidMove(
             this.board,
             destCoords,
@@ -223,6 +224,30 @@ export default class Chess {
         this.board[
           this.selectedPiece.team ? destCoords.row + 1 : destCoords.row - 1
         ][destCoords.column] = null;
+      } else if (
+        this.selectedPiece instanceof King &&
+        this.specialMove.piece != null
+      ) {
+        // Castling
+        let castlingDirection;
+        if (this.selectedPiece.position.column - destCoords.column > 0)
+          castlingDirection = APP_CONSTS.CASTLE_LEFT;
+        else castlingDirection = APP_CONSTS.CASTLE_RIGHT;
+        // Get the Rook
+        let rookCastle;
+        castlingDirection
+          ? (rookCastle = this.board[destCoords.row][destCoords.column + 1])
+          : (rookCastle = this.board[destCoords.row][destCoords.column - 1]);
+        // Clear the Rook square
+        this.board[rookCastle.position.row][rookCastle.position.column] = null;
+        // Update the Rook Position
+        rookCastle.position.column = castlingDirection
+          ? destCoords.column - 1
+          : destCoords.column + 1;
+        // Moves the Rook
+        this.board[rookCastle.position.row][rookCastle.position.column] =
+          rookCastle;
+        enemyPiece = null;
       } else {
         // Get Default Enemy piece
         enemyPiece = this.board[destCoords.row][destCoords.column];
@@ -246,6 +271,13 @@ export default class Chess {
       ] = null;
       // Update the Piece Position
       this.selectedPiece.position = destCoords;
+      // Update King and Rook hasMoved flag
+      if (
+        this.selectedPiece instanceof King ||
+        this.selectedPiece instanceof Rook
+      ) {
+        this.selectedPiece.hasMoved = true;
+      }
       // Clear Selected Piece
       this.selectedPiece = null;
       // Flip Turn
