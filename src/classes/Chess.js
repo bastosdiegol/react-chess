@@ -6,6 +6,7 @@ import Bishop from "./Bishop";
 import Knight from "./Knight";
 import King from "./King";
 import Queen from "./Queen";
+import Rook from "./Rook";
 
 /**
  * Chess Game "Brain" Class.
@@ -87,6 +88,15 @@ export default class Chess {
   setupMainPieces(row, pieces, team) {
     pieces.forEach((piece, columnIndex) => {
       switch (piece.symbol) {
+        case APP_CONSTS.ROOK_BLACK:
+        case APP_CONSTS.ROOK_WHITE:
+          this.board[row][columnIndex] = new Rook(
+            piece.symbol,
+            piece.name,
+            team,
+            new Coords(row, columnIndex)
+          );
+          break;
         case APP_CONSTS.KNIGHT_BLACK:
         case APP_CONSTS.KNIGHT_WHITE:
           this.board[row][columnIndex] = new Knight(
@@ -124,12 +134,7 @@ export default class Chess {
           );
           break;
         default:
-          this.board[row][columnIndex] = new Piece(
-            piece.symbol,
-            piece.name,
-            team,
-            new Coords(row, columnIndex)
-          );
+          this.board[row][columnIndex] = null;
           break;
       }
       if (team === APP_CONSTS.WHITE)
