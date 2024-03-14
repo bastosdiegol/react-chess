@@ -311,11 +311,14 @@ export default class Chess {
    * Accordingly with its own Piece rules.
    */
   updateMoveGuide() {
-    if (this.selectedPiece instanceof Pawn)
+    if (
+      this.selectedPiece instanceof Pawn ||
+      this.selectedPiece instanceof King
+    )
       this.moveGuide = this.selectedPiece.getMoveGuide(
         this.board,
         this.specialMove
       );
-    else this.moveGuide = [];
+    else this.moveGuide = this.selectedPiece.getMoveGuide(this.board);
   }
 }

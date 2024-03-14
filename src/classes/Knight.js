@@ -40,4 +40,39 @@ export default class Knight extends Piece {
     }
     return false;
   }
+
+  /**
+   * Retrieves possible moves for the Knight on the given board.
+   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
+   */
+  getMoveGuide(board) {
+    let moveGuide = [];
+
+    [
+      [2, 1],
+      [2, -1],
+      [-2, 1],
+      [-2, -1],
+      [1, 2],
+      [1, -2],
+      [-1, 2],
+      [-1, -2],
+    ].forEach((offset) => {
+      let targetRow = this.position.row + offset[0];
+      let targetColumn = this.position.column + offset[1];
+
+      if (
+        targetRow >= 0 &&
+        targetRow <= 7 &&
+        targetColumn >= 0 &&
+        targetColumn <= 7 &&
+        (board[targetRow][targetColumn] === null ||
+          board[targetRow][targetColumn].team !== this.team)
+      )
+        moveGuide.push(new Coords(targetRow, targetColumn));
+    });
+
+    return moveGuide;
+  }
 }

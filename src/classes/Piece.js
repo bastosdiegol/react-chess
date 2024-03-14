@@ -96,8 +96,8 @@ export default class Piece {
    * @returns {boolean} Movement is possible or not.
    */
   isValidMove(board, destCoords) {
-    // TODO: code isValidMove in children classes
-    throw new Error("isValidMove method must be implemented");
+    // Method must be implemented on Child Class
+    return false;
   }
 
   /**
@@ -109,8 +109,8 @@ export default class Piece {
    * @returns {boolean} Movement is possible or not.
    */
   isValidMove(board, destCoords, specialMove) {
-    // TODO: code isValidMove in children classes
-    throw new Error("isValidMove method must be implemented");
+    // Method must be implemented on Child Class
+    return false;
   }
 
   /**
@@ -161,5 +161,26 @@ export default class Piece {
     );
 
     return false;
+  }
+
+  /**
+   * Retrieves possible moves for the Knight on the given board.
+   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
+   */
+  getMoveGuide(board) {
+    let moveGuide = [];
+    return moveGuide;
+  }
+
+  /**
+   * Retrieves possible moves for the pawn on the given board.
+   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @property {Object} specialMove - Holds last piece that made special move (En Passant/Castling)
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
+   */
+  getMoveGuide(board, specialMove) {
+    let moveGuide = [];
+    return moveGuide;
   }
 }
