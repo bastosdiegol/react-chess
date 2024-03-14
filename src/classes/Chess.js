@@ -11,13 +11,13 @@ import Rook from "./Rook";
 /**
  * Chess Game "Brain" Class.
  * @class
- * @property {Array<Array<Piece>>} board - Matrix that contains all Chess pieces
+ * @property {Array<Array<Piece|null>>} board - Matrix that contains all Chess pieces
  * @property {APP_CONSTS.WHITE | APP_CONSTS.BLACK} playerTurn - Holds current turn player info
  * @property {Piece} selectedPiece - The selected piece's on the board
- * @property {Piece[]} blackPieces - Array containing all black pieces
- * @property {Piece[]} whitePieces - Array containing all white pieces
- * @property {Object} specialMove - Holds last piece that made special move (En Passant)
- * @property {boolean} pawnDoubleStep - Last move was a pawn two-square advance.
+ * @property {Piece[]} blackPieces - Array containing all black pieces placed on board
+ * @property {Piece[]} whitePieces - Array containing all white pieces placed on board
+ * @property {Coords[]} moveGuide - Array containing possible moves for the selectedPiece
+ * @property {Object} specialMove - Holds last piece that made special move (En Passant + Castling)
  */
 export default class Chess {
   /**
@@ -30,6 +30,7 @@ export default class Chess {
     this.selectedPiece = null;
     this.blackPieces = [];
     this.whitePieces = [];
+    this.moveGuide = [];
     this.specialMove = { piece: null };
   }
 
@@ -145,7 +146,7 @@ export default class Chess {
   }
 
   /**
-   * Set up the pawns for a given color.
+   * Set up the pawns for a given team.
    * @param {number} row - The row index where the pawns will be set up.
    * @param {string} symbol - The symbol representing the pawns.
    * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - The color of the pawns to be set up.
@@ -189,6 +190,7 @@ export default class Chess {
     let isMoveValid;
     if (this.selectedPiece instanceof Piece) {
       // Pawn Method override due to En Passant
+      // King Method override due to Clastling
       switch (true) {
         case this.selectedPiece instanceof Pawn:
         case this.selectedPiece instanceof King:
@@ -224,11 +226,12 @@ export default class Chess {
         this.board[
           this.selectedPiece.team ? destCoords.row + 1 : destCoords.row - 1
         ][destCoords.column] = null;
-      } else if (
+      }
+      // Castling Treatment
+      else if (
         this.selectedPiece instanceof King &&
         this.specialMove.piece != null
       ) {
-        // Castling
         let castlingDirection;
         if (this.selectedPiece.position.column - destCoords.column > 0)
           castlingDirection = APP_CONSTS.CASTLE_LEFT;
@@ -252,6 +255,9 @@ export default class Chess {
         // Get Default Enemy piece
         enemyPiece = this.board[destCoords.row][destCoords.column];
       }
+
+      // Default Movement and Taking Treatment
+
       // Remove the enemy piece from the opposing team array
       if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.WHITE) {
         this.whitePieces.splice(
@@ -269,6 +275,15 @@ export default class Chess {
       this.board[this.selectedPiece.position.row][
         this.selectedPiece.position.column
       ] = null;
+      // Uncheck Pawn isFirstMove
+      if (
+        this.selectedPiece instanceof Pawn &&
+        ((this.selectedPiece.team === APP_CONSTS.BLACK &&
+          this.selectedPiece.position.row !== 1) ||
+          (this.selectedPiece.team === APP_CONSTS.WHITE &&
+            this.selectedPiece.position.row !== 6))
+      )
+        this.selectedPiece.isFirstMove = false;
       // Update the Piece Position
       this.selectedPiece.position = destCoords;
       // Update King and Rook hasMoved flag
@@ -288,5 +303,19 @@ export default class Chess {
     }
 
     return false;
+  }
+
+  /**
+   * Method that sets up Chess.moveGuide array with a list of Coords.
+   * These Coords are valid square move for the Chess.selectedPiece
+   * Accordingly with its own Piece rules.
+   */
+  updateMoveGuide() {
+    if (this.selectedPiece instanceof Pawn)
+      this.moveGuide = this.selectedPiece.getMoveGuide(
+        this.board,
+        this.specialMove
+      );
+    else this.moveGuide = [];
   }
 }

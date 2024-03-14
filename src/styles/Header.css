@@ -23,18 +23,29 @@ header {
   font-weight: 700;
 }
 
-.board-theme {
+.settings {
   display: flex;
   padding: 10px;
-  gap: 5px;
+  gap: 10px;
   color: #fff;
 }
 
-.board-theme label {
+.board-theme {
+  display: flex;
+  gap: 5px;
+}
+
+.board-theme label,
+.switch {
   font-size: 1.2rem;
 }
 
 .board-theme select {
   border-radius: 5px;
   font-size: small;
+}
+
+.move-guide {
+  display: flex;
+  gap: 5px;
 }

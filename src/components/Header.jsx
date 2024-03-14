@@ -12,7 +12,7 @@ import { CHESSBOARD_THEMES } from '../constants';
  */
 export default function Header(props){
 
-    const { theme, setTheme } = props;
+    const { theme, setTheme, moveGuide, setMoveGuide } = props;
 
     // Generating the theme options JSX elements
     const themeOptions = Object.keys(CHESSBOARD_THEMES).map((themeName, index) => {
@@ -43,7 +43,7 @@ export default function Header(props){
         document.documentElement.style.setProperty('--white-square-color', CHESSBOARD_THEMES[selectedTheme].whiteSquare);
         document.documentElement.style.setProperty('--black-square-color', CHESSBOARD_THEMES[selectedTheme].blackSquare);
         document.documentElement.style.setProperty('--selected-square-border', CHESSBOARD_THEMES[selectedTheme].selectedSquareBorder);
-        document.documentElement.style.setProperty('--selected-square-background', CHESSBOARD_THEMES[selectedTheme].selectedSquareBackground);
+        document.documentElement.style.setProperty('--guide-square-background-mix', CHESSBOARD_THEMES[selectedTheme].guideSquareBackgroundMix);
     }
 
     return(
@@ -53,11 +53,20 @@ export default function Header(props){
                 <img src={chessLogo} alt="Chess Game Logo" className="chess-logo" />
                 <p className="logo-text">React Chess Game</p>
             </div>
-            <div className="board-theme">
-                <label htmlFor="board-theme">Board Theme:</label>
-                <select name="board-theme" id="board-theme" value={theme} onChange={handleThemeChange}>
-                    {themeOptions}
-                </select>
+            <div className="settings">
+                <div className="move-guide">
+                    <label className="switch" htmlFor="toggleSwitch">Move Helper:</label>
+                    <input type="checkbox" 
+                           id="toggleSwitch" 
+                           checked={moveGuide} 
+                           onChange={(event) => setMoveGuide(event.target.checked)}  />          
+                </div>
+                <div className="board-theme">
+                    <label htmlFor="board-theme">Board Theme:</label>
+                    <select name="board-theme" id="board-theme" value={theme} onChange={handleThemeChange}>
+                        {themeOptions}
+                    </select>
+                </div>
             </div>
         </header>
     );

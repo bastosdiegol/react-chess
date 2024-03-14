@@ -24,7 +24,7 @@ import APP_CONSTS from '../constants.js';
  */
 export default function Chessboard(props){
 
-    const { chess, setChess, theme } = props;
+    const { chess, setChess, moveGuide } = props;
 
     /**
      * Function to select a new piece on the board.
@@ -35,6 +35,7 @@ export default function Chessboard(props){
         const updatedChess = new Chess();
         Object.assign(updatedChess, chess);
         updatedChess.selectedPiece = updatedChess.board[row][column];
+        updatedChess.updateMoveGuide();
         setChess(updatedChess);
     }
 
@@ -68,7 +69,13 @@ export default function Chessboard(props){
                                  className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'black-square' : 'white-square'} ${
                                     piece && chess.selectedPiece 
                                           && chess.selectedPiece.position.row === rowIndex 
-                                          && chess.selectedPiece.position.column === columnIndex ? 'selected' : ''}`}
+                                          && chess.selectedPiece.position.column === columnIndex ? 'selected' : ''} ${
+                                    moveGuide && chess.selectedPiece 
+                                              && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
+                                              && (rowIndex + columnIndex) % 2 !== 0 ? 'possible-move-black' : ''} ${
+                                    moveGuide && chess.selectedPiece 
+                                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
+                                                && (rowIndex + columnIndex) % 2 === 0 ? 'possible-move-white' : ''}`}
                                  onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
                                                 || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
                                                  ? () => selectNewPiece(rowIndex, columnIndex) 

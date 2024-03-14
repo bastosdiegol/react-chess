@@ -5,7 +5,7 @@
   --white-square-color: #f0d9b5;
   --black-square-color: #b58863;
   --selected-square-border: 5px solid #50c878;
-  --selected-square-background: #add8e6;
+  --guide-square-background-mix: #6bbbe3;
 }
 
 main {
@@ -37,6 +37,22 @@ main {
 
 .white-square {
   background-color: var(--white-square-color);
+}
+
+.possible-move-black {
+  background-color: color-mix(
+    in srgb,
+    var(--black-square-color),
+    var(--guide-square-background-mix) 50%
+  );
+}
+
+.possible-move-white {
+  background-color: color-mix(
+    in srgb,
+    var(--white-square-color),
+    var(--guide-square-background-mix) 50%
+  );
 }
 
 .piece-img {
