@@ -164,23 +164,35 @@ export default class Piece {
   }
 
   /**
-   * Retrieves possible moves for the Knight on the given board.
+   * Retrieves possible moves for the a Piece on the given board.
    * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @param {Array<Array<number>>} directions - An array with the move directions of a piece.
    * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
    */
-  getMoveGuide(board) {
+  getMoveGuide(board, directions) {
     let moveGuide = [];
-    return moveGuide;
-  }
 
-  /**
-   * Retrieves possible moves for the pawn on the given board.
-   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
-   * @property {Object} specialMove - Holds last piece that made special move (En Passant/Castling)
-   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
-   */
-  getMoveGuide(board, specialMove) {
-    let moveGuide = [];
+    directions.forEach((dir) => {
+      let tempRow = this.position.row + dir[0];
+      let tempColumn = this.position.column + dir[1];
+
+      while (
+        tempRow >= 0 &&
+        tempRow <= 7 &&
+        tempColumn >= 0 &&
+        tempColumn <= 7 &&
+        this.hasLineOfSight(
+          board,
+          this.position,
+          new Coords(tempRow, tempColumn)
+        )
+      ) {
+        moveGuide.push(new Coords(tempRow, tempColumn));
+        tempRow += dir[0];
+        tempColumn += dir[1];
+      }
+    });
+
     return moveGuide;
   }
 }

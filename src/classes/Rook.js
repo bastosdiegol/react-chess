@@ -56,4 +56,20 @@ export default class Rook extends Piece {
     }
     return false;
   }
+
+  /**
+   * Retrieves possible moves for the Queen on the given board.
+   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
+   */
+  getMoveGuide(board) {
+    const MOVE_DIRECTIONS = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+
+    return super.getMoveGuide(board, MOVE_DIRECTIONS);
+  }
 }
