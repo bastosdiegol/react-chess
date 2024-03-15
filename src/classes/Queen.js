@@ -29,12 +29,12 @@ export default class Queen extends Piece {
    */
   isValidMove(board, destCoords) {
     if (
-      Math.abs(this.position.row - destCoords.row) ===
+      (Math.abs(this.position.row - destCoords.row) ===
         Math.abs(this.position.column - destCoords.column) ||
-      ((this.position.row === destCoords.row ||
+        this.position.row === destCoords.row ||
         this.position.column === destCoords.column) &&
-        (board[destCoords.row][destCoords.column] === null ||
-          board[destCoords.row][destCoords.column].team !== this.team))
+      (board[destCoords.row][destCoords.column] === null ||
+        board[destCoords.row][destCoords.column].team !== this.team)
     ) {
       return true;
     }

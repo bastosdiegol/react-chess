@@ -12,9 +12,18 @@ function App() {
   const [theme, setTheme] = useState("Classic");
   const [moveGuide, setMoveGuide] = useState(true);
 
+  function newGame(){
+    if(confirm("Are you sure you want to start a new game?")) {
+      const updatedChess = new Chess();
+      Object.assign(updatedChess, chess);    
+      updatedChess.newGame();
+      setChess(updatedChess);
+    }
+  }
+
   return (
     <>
-      <Header theme={theme} setTheme={setTheme} moveGuide={moveGuide} setMoveGuide={setMoveGuide} />
+      <Header theme={theme} setTheme={setTheme} moveGuide={moveGuide} setMoveGuide={setMoveGuide} setNewGame={newGame} />
       <Chessboard chess={chess} setChess={setChess} moveGuide={moveGuide} />
     </>
   )

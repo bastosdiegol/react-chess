@@ -38,8 +38,12 @@ export default class Chess {
    * Initializes a new game of chess.
    */
   newGame() {
+    this.playerTurn = APP_CONSTS.WHITE;
+    this.selectedPiece = null;
     this.blackPieces = [];
     this.whitePieces = [];
+    this.moveGuide = [];
+    this.specialMove = { piece: null };
 
     const BLACK_MAIN_PIECES = [
       { symbol: APP_CONSTS.ROOK_BLACK, name: "Black Rook" },

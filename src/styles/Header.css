@@ -36,7 +36,8 @@ header {
 }
 
 .board-theme label,
-.switch {
+.switch,
+.new-game button {
   font-size: 1.2rem;
 }
 
@@ -48,4 +49,9 @@ header {
 .move-guide {
   display: flex;
   gap: 5px;
+}
+
+.new-game button {
+  border-radius: 5px;
+  padding: 0 5px;
 }

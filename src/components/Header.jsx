@@ -12,7 +12,7 @@ import { CHESSBOARD_THEMES } from '../constants';
  */
 export default function Header(props){
 
-    const { theme, setTheme, moveGuide, setMoveGuide } = props;
+    const { theme, setTheme, moveGuide, setMoveGuide, setNewGame } = props;
 
     // Generating the theme options JSX elements
     const themeOptions = Object.keys(CHESSBOARD_THEMES).map((themeName, index) => {
@@ -66,6 +66,9 @@ export default function Header(props){
                     <select name="board-theme" id="board-theme" value={theme} onChange={handleThemeChange}>
                         {themeOptions}
                     </select>
+                </div>
+                <div className="new-game">
+                    <button type="button" onClick={setNewGame}>New Game</button>
                 </div>
             </div>
         </header>
