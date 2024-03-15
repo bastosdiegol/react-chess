@@ -30,18 +30,21 @@ header {
   color: #fff;
 }
 
-.board-theme {
+.board-theme,
+.locale {
   display: flex;
   gap: 5px;
 }
 
 .board-theme label,
+.locale label,
 .switch,
 .new-game button {
   font-size: 1.2rem;
 }
 
-.board-theme select {
+.board-theme select,
+.locale select {
   border-radius: 5px;
   font-size: small;
 }

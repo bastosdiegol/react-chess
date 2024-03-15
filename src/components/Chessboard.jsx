@@ -24,7 +24,7 @@ import APP_CONSTS from '../constants.js';
  */
 export default function Chessboard(props){
 
-    const { chess, setChess, moveGuide } = props;
+    const { chess, setChess, moveGuide, localeData } = props;
 
     /**
      * Function to select a new piece on the board.
@@ -55,11 +55,11 @@ export default function Chessboard(props){
     return(
         <main>
             <div className='turn-info'>
-                <p><strong>Turn:</strong> </p>
+                <p><strong>{localeData.move_turn}:</strong> </p>
                 <img src={chess.playerTurn === APP_CONSTS.WHITE ? pawnWhite : pawnBlack } 
-                    alt="Player Turn Image" 
+                    alt={`${localeData.player} ${localeData.move_turn} ${localeData.image}`} 
                     className="turn-info-img" />
-                <p>{chess.playerTurn ? "White" : "Black"} Pieces</p>
+                <p>{chess.playerTurn ? localeData.pieces_white : localeData.pieces_black}</p>
             </div>
             <div id="chessboard" className="chessboard">
                 {chess.board.map((row, rowIndex) => (
@@ -81,7 +81,7 @@ export default function Chessboard(props){
                                                  ? () => selectNewPiece(rowIndex, columnIndex) 
                                                  : chess.selectedPiece ? () => movePiece(rowIndex, columnIndex) : null}>
                                 {piece && <img src={getPieceImg(piece.symbol)} 
-                                               alt={`${piece.name} Image`} 
+                                               alt={`${localeData.pieces[piece.symbol]} ${localeData.image}`} 
                                                className='piece-img' />}
                             </div>
                         ))}

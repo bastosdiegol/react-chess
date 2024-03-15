@@ -23,49 +23,49 @@ const APP_CONSTS = {
 };
 
 const CHESSBOARD_THEMES = {
-  "Classic Wood": {
+  theme_classic: {
     border: "5px solid #8B4513",
     whiteSquare: "#F0D9B5",
     blackSquare: "#B58863",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#6bbbe3",
   },
-  "Futuristic Silver": {
+  theme_silver: {
     border: "5px solid #C0C0C0",
     whiteSquare: "#F5F5F5",
     blackSquare: "#A9A9A9",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#6bbbe3",
   },
-  Pastel: {
+  theme_pastel: {
     border: "5px solid #999",
     whiteSquare: "#ffe4e1",
     blackSquare: "#add8e6",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#d989d9",
   },
-  "Minimalistic Grey": {
+  theme_grey: {
     border: "5px solid #333",
     whiteSquare: "#ddd",
     blackSquare: "#666",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#6bbbe3",
   },
-  Light: {
+  theme_light: {
     border: "5px solid #999",
     whiteSquare: "#f0f0f0",
     blackSquare: "#ccc",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#91c7cf",
   },
-  "Modern Blue": {
+  theme_blue: {
     border: "5px solid #4682B4",
     whiteSquare: "#B0C4DE",
     blackSquare: "#4169E1",
     selectedSquareBorder: "5px solid #50c878",
     guideSquareBackgroundMix: "#93649c",
   },
-  "Elegant Green": {
+  theme_green: {
     border: "5px solid #228B22",
     whiteSquare: "#98FB98",
     blackSquare: "#556B2F",
