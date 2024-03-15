@@ -67,4 +67,67 @@ export default class King extends Piece {
     }
     return false;
   }
+
+  /**
+   * Retrieves possible moves for the King on the given board.
+   * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
+   * @property {Object} specialMove - Holds last piece that made special move (Castling)
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the King.
+   */
+  getMoveGuide(board, specialMove) {
+    let moveGuide = [];
+
+    const MOVE_DIRECTIONS = [
+      [1, 1],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+
+    MOVE_DIRECTIONS.forEach((dir) => {
+      const TARGET_ROW = this.position.row + dir[0];
+      const TARGET_COLUMN = this.position.column + dir[1];
+
+      if (
+        TARGET_ROW >= 0 &&
+        TARGET_ROW <= 7 &&
+        TARGET_COLUMN >= 0 &&
+        TARGET_COLUMN <= 7 &&
+        (board[TARGET_ROW][TARGET_COLUMN] === null ||
+          board[TARGET_ROW][TARGET_COLUMN].team !== this.team)
+      ) {
+        moveGuide.push(new Coords(TARGET_ROW, TARGET_COLUMN));
+      }
+    });
+
+    // Castling
+    if (!this.hasMoved) {
+      if (
+        board[this.position.row][1] === null &&
+        this.hasLineOfSight(
+          board,
+          this.position,
+          new Coords(this.position.row, 1)
+        )
+      )
+        moveGuide.push(new Coords(this.position.row, 1));
+      if (
+        board[this.position.row][6] === null &&
+        this.hasLineOfSight(
+          board,
+          this.position,
+          new Coords(this.position.row, 6)
+        )
+      )
+        moveGuide.push(new Coords(this.position.row, 6));
+    }
+
+    return moveGuide;
+  }
 }
+
+// TODO: Needs to verify for Check and Checkmate to moving and castling

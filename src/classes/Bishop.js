@@ -42,7 +42,7 @@ export default class Bishop extends Piece {
   /**
    * Retrieves possible moves for the Bishop on the given board.
    * @param {Array<Array<Piece|null>>} board - The game board represented as a 2D array.
-   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the pawn.
+   * @returns {Array<Coords>} An array containing coordinates representing valid moves for the Bishop.
    */
   getMoveGuide(board) {
     const MOVE_DIRECTIONS = [
