@@ -20,6 +20,28 @@ const APP_CONSTS = {
   PAWN_WHITE: "P",
   CASTLE_LEFT: 0,
   CASTLE_RIGHT: 1,
+  COORDS_TO_CHAR: {
+    ROW: {
+      0: 7,
+      1: 6,
+      2: 5,
+      3: 4,
+      4: 3,
+      5: 2,
+      6: 1,
+      7: 0,
+    },
+    COLUMN: {
+      0: "a",
+      1: "b",
+      2: "c",
+      3: "d",
+      4: "e",
+      5: "f",
+      6: "g",
+      7: "h",
+    },
+  },
 };
 
 const CHESSBOARD_THEMES = {

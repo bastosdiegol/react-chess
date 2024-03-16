@@ -32,6 +32,8 @@ export default function Chessboard(props){
      * @param {number} column - Column index of the selected piece.
      */
     function selectNewPiece(row, column){
+        if(chess.board[row][column] && chess.board[row][column].team !== chess.playerTurn)
+            return;
         const updatedChess = new Chess();
         Object.assign(updatedChess, chess);
         updatedChess.selectedPiece = updatedChess.board[row][column];
@@ -40,7 +42,7 @@ export default function Chessboard(props){
     }
 
     /**
-     * Function to move a piece on the board.
+     * Function to move a piece on the board. (Click Move)
      * @param {number} destRow - Destination row index for the piece.
      * @param {number} destColumn - Destination column index for the piece.
      */
@@ -52,39 +54,124 @@ export default function Chessboard(props){
         }
     }
 
+    /**
+     * Function to move a piece on the board. (Drag-and-Drop Move)
+     * @param {React.DragEvent} event - Destination row index for the piece.
+     * @param {number} destRow - Destination row index for the piece.
+     * @param {number} destColumn - Destination column index for the piece.
+     */
+    function movePiece(event, row, column){
+        if(chess.board[row][column] && chess.board[row][column].team !== chess.playerTurn)
+            return;
+        const updatedChess = new Chess();
+        Object.assign(updatedChess, chess);
+
+        let destCoords = getDestinationCoords(event.clientX, event.clientY);
+
+        if(updatedChess.movePiece(destCoords)){
+            setChess(updatedChess);
+        }
+    }
+
+    /**
+     * Calculates the row and column indexes corresponding to the destination coordinates on the chessboard.
+     * @param {number} mouseX - The horizontal position of the mouse cursor.
+     * @param {number} mouseY - The vertical position of the mouse cursor.
+     * @returns {Coords} The coordinates of the destination square on the chessboard.
+     */
+    function getDestinationCoords(mouseX, mouseY){
+        const CHESSBOARD = document.getElementById('chessboard');
+        const BOARD_TOP = CHESSBOARD.getBoundingClientRect().top;
+        const BOARD_LEFT = CHESSBOARD.getBoundingClientRect().left;
+
+        // The size of each square on the chessboard
+        // TODO: use variable size for square
+        const SQUARE_SIZE = 80;
+
+        // Calculate the row and column index of the destination square
+        const DROP_ROW_INDEX = Math.floor((mouseY - BOARD_TOP ) / SQUARE_SIZE);
+        const DROP_COLUMN_INDEX = Math.floor((mouseX - BOARD_LEFT) / SQUARE_SIZE);
+
+        return new Coords(DROP_ROW_INDEX,DROP_COLUMN_INDEX);
+    }
+
     return(
         <main>
-            <div className='turn-info'>
+            <div id='turn-info' className='turn-info'>
                 <p><strong>{localeData.move_turn}:</strong> </p>
                 <img src={chess.playerTurn === APP_CONSTS.WHITE ? pawnWhite : pawnBlack } 
                     alt={`${localeData.player} ${localeData.move_turn} ${localeData.image}`} 
                     className="turn-info-img" />
                 <p>{chess.playerTurn ? localeData.pieces_white : localeData.pieces_black}</p>
             </div>
-            <div id="chessboard" className="chessboard">
+            <div id="chessboard" className="chessboard" onDragOver={event => event.preventDefault()}>
                 {chess.board.map((row, rowIndex) => (
+                    // Chessboard Row
                     <div key={rowIndex} className="row">
-                        {row.map((piece, columnIndex) => (
-                            <div key={columnIndex} 
-                                 className={`square ${((rowIndex + columnIndex) % 2 !== 0) ? 'black-square' : 'white-square'} ${
-                                    piece && chess.selectedPiece 
-                                          && chess.selectedPiece.position.row === rowIndex 
-                                          && chess.selectedPiece.position.column === columnIndex ? 'selected' : ''} ${
-                                    moveGuide && chess.selectedPiece 
-                                              && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
-                                              && (rowIndex + columnIndex) % 2 !== 0 ? 'possible-move-black' : ''} ${
-                                    moveGuide && chess.selectedPiece 
-                                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
-                                                && (rowIndex + columnIndex) % 2 === 0 ? 'possible-move-white' : ''}`}
-                                 onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
-                                                || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
-                                                 ? () => selectNewPiece(rowIndex, columnIndex) 
-                                                 : chess.selectedPiece ? () => movePiece(rowIndex, columnIndex) : null}>
-                                {piece && <img src={getPieceImg(piece.symbol)} 
-                                               alt={`${localeData.pieces[piece.symbol]} ${localeData.image}`} 
-                                               className='piece-img' />}
-                            </div>
-                        ))}
+                        {row.map((piece, columnIndex) => {
+                            // Calculate the Square Background
+                            let squareBackground = ((rowIndex + columnIndex) % 2 !== 0) ? "black-square" : "white-square";
+                            // Calculate if the Square is Selected
+                            let squareSelected = 
+                                piece && chess.selectedPiece 
+                                && chess.selectedPiece.position.row === rowIndex 
+                                && chess.selectedPiece.position.column === columnIndex ? "selected" : "";
+                            // Calculate the Move Guide Square Background Color
+                            let squareBackgroundColor =
+                                moveGuide && chess.selectedPiece 
+                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
+                                && (rowIndex + columnIndex) % 2 !== 0 
+                                    ? "possible-move-black" 
+                                    : "";
+                            squareBackgroundColor += 
+                                moveGuide && chess.selectedPiece 
+                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
+                                && (rowIndex + columnIndex) % 2 === 0 
+                                    ? "possible-move-white" 
+                                    : "";
+
+                            return (
+                                <div key={columnIndex} className="square-wrapper">
+                                    <div className={`square ${squareBackground} ${squareSelected} ${ squareBackgroundColor}`}
+                                         // onClick settings
+                                         onClick={piece && ((chess.playerTurn === APP_CONSTS.WHITE && chess.whitePieces.includes(piece)) 
+                                                         || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
+                                                         ? () => selectNewPiece(rowIndex, columnIndex) 
+                                                         : chess.selectedPiece 
+                                                            ? () => movePiece(rowIndex, columnIndex) 
+                                                            : null}>
+                                        {//Piece Image
+                                        piece && <img src={getPieceImg(piece.symbol)} 
+                                                      alt={`${localeData.pieces[piece.symbol]} ${localeData.image}`} 
+                                                      className='piece-img' 
+                                                      draggable='true' 
+                                                      onDragStart={(event) => {
+                                                        if(piece.team === chess.playerTurn){
+                                                            event.dataTransfer.effectAllowed = "move";
+                                                        }else{
+                                                            event.dataTransfer.effectAllowed = "none";
+                                                        }
+                                                        selectNewPiece(rowIndex, columnIndex);
+                                                      }} 
+                                                      onDragEnd={(event) => {
+                                                        movePiece(event, rowIndex, columnIndex);
+                                                      }} />}
+                                    </div>
+                                    { columnIndex === 0 // Row Index Output on 1st Column
+                                        ? (<p className={`row-index ${
+                                            ((rowIndex + columnIndex) % 2 !== 0) ? 'coords-white' : 'coords-black'}`}>
+                                                {APP_CONSTS.COORDS_TO_CHAR.ROW[rowIndex]}
+                                                {/* {rowIndex} */}
+                                            </p>) : '' }
+                                    { rowIndex === 7 // Column Index Output on 8th Row
+                                        ? (<p className={`column-index ${
+                                            ((rowIndex + columnIndex) % 2 !== 0) ? 'coords-white' : 'coords-black'}`}>
+                                                {APP_CONSTS.COORDS_TO_CHAR.COLUMN[columnIndex]}
+                                                {/* {columnIndex} */}
+                                            </p>) : '' }
+                                </div>
+                            );
+                        })}
                     </div>
                 ))}
             </div>

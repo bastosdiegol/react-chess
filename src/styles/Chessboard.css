@@ -31,6 +31,11 @@ main {
   border: 10px solid transparent;
 }
 
+.square-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .black-square {
   background-color: var(--black-square-color);
 }
@@ -74,4 +79,30 @@ main {
 .selected {
   border: var(--selected-square-border);
   padding: 5px;
+}
+
+.row-index {
+  position: absolute;
+  color: darkslategray;
+  top: 0;
+  left: 5px;
+  font-size: 1.2rem;
+}
+
+.column-index {
+  position: absolute;
+  color: darkslategray;
+  bottom: 0;
+  right: 5px;
+  font-size: 1.2rem;
+}
+
+.coords-black {
+  font-weight: bolder;
+  color: var(--black-square-color);
+}
+
+.coords-white {
+  font-weight: bolder;
+  color: var(--white-square-color);
 }
