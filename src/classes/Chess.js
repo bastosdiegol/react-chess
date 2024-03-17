@@ -32,6 +32,7 @@ export default class Chess {
     this.whitePieces = [];
     this.moveGuide = [];
     this.specialMove = { piece: null };
+    this.moveLog = [];
   }
 
   /**
@@ -179,6 +180,14 @@ export default class Chess {
     // Variable that checks if last move special piece needs to be cleared
     let clearSpecial = this.specialMove.piece ? true : false;
     let enemyPiece;
+    // Log Variables
+    let hasTaking = false;
+    let hasCheck = false;
+    let isCheckmate = false;
+    let hasAmbiguity = false;
+    let isCastling = false;
+    let isEnPassant = false;
+    let hasPromotion = false;
     // Checks for Line of Sight before moving
     let hasLoS;
     if (this.selectedPiece instanceof Knight) {
@@ -230,6 +239,7 @@ export default class Chess {
         this.board[
           this.selectedPiece.team ? destCoords.row + 1 : destCoords.row - 1
         ][destCoords.column] = null;
+        isEnPassant = true;
       }
       // Castling Treatment
       else if (
@@ -255,6 +265,7 @@ export default class Chess {
         this.board[rookCastle.position.row][rookCastle.position.column] =
           rookCastle;
         enemyPiece = null;
+        isCastling = true;
       } else {
         // Get Default Enemy piece
         enemyPiece = this.board[destCoords.row][destCoords.column];
@@ -262,18 +273,35 @@ export default class Chess {
 
       // Default Movement and Taking Treatment
 
+      // Check for Move Ambiguity
+      hasAmbiguity = this.hasMoveAmbiguity(destCoords);
       // Remove the enemy piece from the opposing team array
       if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.WHITE) {
         this.whitePieces.splice(
           this.whitePieces.findIndex((item) => item === enemyPiece),
           1
         );
+        hasTaking = true;
       } else if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.BLACK) {
         this.blackPieces.splice(
           this.blackPieces.findIndex((item) => item === enemyPiece),
           1
         );
+        hasTaking = true;
       }
+      // Log Move
+      this.logMove(
+        this.selectedPiece,
+        destCoords,
+        hasTaking,
+        hasCheck,
+        isCheckmate,
+        isCastling,
+        hasAmbiguity,
+        isEnPassant,
+        hasPromotion,
+        ""
+      );
       // Update the board reflecting current piece movement
       this.board[destCoords.row][destCoords.column] = this.selectedPiece;
       this.board[this.selectedPiece.position.row][
@@ -324,5 +352,111 @@ export default class Chess {
         this.specialMove
       );
     else this.moveGuide = this.selectedPiece.getMoveGuide(this.board);
+  }
+
+  /**
+   * Logs a move in algebraic notation to the move log.
+   * @param {Piece} piece - The piece making the move.
+   * @param {Coords} destCoords - The destination coordinates of the move.
+   * @param {boolean} [hasTaking=false] - Indicates if the move involves capturing an opponent's piece.
+   * @param {boolean} [hasCheck=false] - Indicates if the move puts the opponent's king in check.
+   * @param {boolean} [isCheckmate=false] - Indicates if the move results in checkmate.
+   * @param {boolean} [isCastling=false] - Indicates if the move is a castling move.
+   * @param {boolean} [isEnPassant=false] - Indicates if the move is an En Passant move.
+   * @param {boolean} [hasPromotion=false] - Indicates if the move results in pawn promotion.
+   * @param {string} [promotedSymbol=""] - The symbol of the piece the pawn is promoted to.
+   */
+  logMove(
+    piece,
+    destCoords,
+    hasTaking = false,
+    hasCheck = false,
+    isCheckmate = false,
+    isCastling = false,
+    hasAmbiguity = false,
+    isEnPassant = false,
+    hasPromotion = false,
+    promotedSymbol = ""
+  ) {
+    let logString = "";
+
+    if (isEnPassant) {
+      this.moveLog.push(
+        piece.position.toString()[0] + "x" + destCoords.toString() + " e.p."
+      );
+      return;
+    }
+
+    if (piece instanceof King && isCastling) {
+      if (piece.position.column - destCoords.column > 0) {
+        this.moveLog.push("O-O-O");
+        return;
+      } else {
+        this.moveLog.push("O-O");
+        return;
+      }
+    }
+
+    if (piece instanceof Pawn === false)
+      logString += piece.symbol.toUpperCase();
+    if ((piece instanceof Pawn && hasTaking) || hasAmbiguity)
+      logString += piece.position.toString()[0];
+    if (hasTaking) logString += "x";
+    logString += destCoords.toString();
+    if (hasPromotion) logString += promotedSymbol.toUpperCase();
+    if (hasCheck) logString += "+";
+    if (isCheckmate) logString += "#";
+
+    this.moveLog.push(logString);
+  }
+
+  /**
+   * Checks if moving the selected piece to the destination coordinates would result in move ambiguity.
+   * Move ambiguity occurs when another piece of the same type on the opposite team can also move to the same destination.
+   * @param {Coords} destCoords - The destination coordinates of the move.
+   * @returns {boolean} True if there is move ambiguity, otherwise false.
+   */
+  hasMoveAmbiguity(destCoords) {
+    let theOtherPiece;
+
+    // Iterate through black pieces if the selected piece belongs to the black team
+    if (this.selectedPiece.team === APP_CONSTS.BLACK) {
+      this.blackPieces.forEach((piece) => {
+        if (
+          piece.constructor === this.selectedPiece.constructor &&
+          piece.position !== this.selectedPiece.position
+        ) {
+          theOtherPiece = piece;
+          return;
+        }
+      });
+    }
+    // Iterate through white pieces if the selected piece belongs to the white team
+    if (this.selectedPiece.team === APP_CONSTS.WHITE) {
+      this.whitePieces.forEach((piece) => {
+        if (
+          piece.constructor === this.selectedPiece.constructor &&
+          piece.position !== this.selectedPiece.position
+        ) {
+          theOtherPiece = piece;
+          return;
+        }
+      });
+    }
+    // If no other piece of the same type on the opposite team was found, return false
+    if (!theOtherPiece) return false;
+    // Knight Case - check if it can make a valid move to the destination coordinates
+    if (theOtherPiece instanceof Knight)
+      return theOtherPiece.isValidMove(this.board, destCoords);
+    // Rook Case - check if it can make a valid move and has LoS to the destination coordinates
+    if (theOtherPiece instanceof Rook)
+      return (
+        theOtherPiece.isValidMove(this.board, destCoords) &&
+        theOtherPiece.hasLineOfSight(
+          this.board,
+          theOtherPiece.position,
+          destCoords
+        )
+      );
   }
 }

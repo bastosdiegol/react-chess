@@ -46,7 +46,7 @@ export default function Chessboard(props){
      * @param {number} destRow - Destination row index for the piece.
      * @param {number} destColumn - Destination column index for the piece.
      */
-    function movePiece(destRow, destColumn){
+    function movePieceByClick(destRow, destColumn){
         const updatedChess = new Chess();
         Object.assign(updatedChess, chess);
         if(updatedChess.movePiece(new Coords(destRow, destColumn))){
@@ -60,7 +60,7 @@ export default function Chessboard(props){
      * @param {number} destRow - Destination row index for the piece.
      * @param {number} destColumn - Destination column index for the piece.
      */
-    function movePiece(event, row, column){
+    function movePieceByDrag(event, row, column){
         if(chess.board[row][column] && chess.board[row][column].team !== chess.playerTurn)
             return;
         const updatedChess = new Chess();
@@ -117,18 +117,15 @@ export default function Chessboard(props){
                                 && chess.selectedPiece.position.row === rowIndex 
                                 && chess.selectedPiece.position.column === columnIndex ? "selected" : "";
                             // Calculate the Move Guide Square Background Color
-                            let squareBackgroundColor =
-                                moveGuide && chess.selectedPiece 
-                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
-                                && (rowIndex + columnIndex) % 2 !== 0 
-                                    ? "possible-move-black" 
-                                    : "";
-                            squareBackgroundColor += 
-                                moveGuide && chess.selectedPiece 
-                                && chess.moveGuide.find(item => item.equals(rowIndex, columnIndex))
-                                && (rowIndex + columnIndex) % 2 === 0 
-                                    ? "possible-move-white" 
-                                    : "";
+                            let squareBackgroundColor = "";
+                            if (moveGuide && chess.selectedPiece) {
+                                const moveGuideItem = chess.moveGuide.find(item => item.equals(rowIndex, columnIndex));
+                                if (moveGuideItem) {
+                                    squareBackgroundColor = 
+                                        (rowIndex + columnIndex) % 2 !== 0 
+                                        ? "possible-move-black" : "possible-move-white";
+                                }
+                            }
 
                             return (
                                 <div key={columnIndex} className="square-wrapper">
@@ -138,7 +135,7 @@ export default function Chessboard(props){
                                                          || (chess.playerTurn === APP_CONSTS.BLACK && chess.blackPieces.includes(piece)))
                                                          ? () => selectNewPiece(rowIndex, columnIndex) 
                                                          : chess.selectedPiece 
-                                                            ? () => movePiece(rowIndex, columnIndex) 
+                                                            ? () => movePieceByClick(rowIndex, columnIndex) 
                                                             : null}>
                                         {//Piece Image
                                         piece && <img src={getPieceImg(piece.symbol)} 
@@ -154,7 +151,7 @@ export default function Chessboard(props){
                                                         selectNewPiece(rowIndex, columnIndex);
                                                       }} 
                                                       onDragEnd={(event) => {
-                                                        movePiece(event, rowIndex, columnIndex);
+                                                        movePieceByDrag(event, rowIndex, columnIndex);
                                                       }} />}
                                     </div>
                                     { columnIndex === 0 // Row Index Output on 1st Column
