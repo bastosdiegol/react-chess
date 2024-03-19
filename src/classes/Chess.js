@@ -188,38 +188,9 @@ export default class Chess {
     let isCastling = false;
     let isEnPassant = false;
     let hasPromotion = false;
-    // Checks for Line of Sight before moving
-    let hasLoS;
-    if (this.selectedPiece instanceof Knight) {
-      hasLoS = true; // Knight Exception
-    } else {
-      hasLoS = this.selectedPiece.hasLineOfSight(
-        this.board,
-        this.selectedPiece.position,
-        destCoords
-      );
-    }
-    // Checks if the movement is valid - accordingly with each Piece Rule
-    let isMoveValid;
-    if (this.selectedPiece instanceof Piece) {
-      // Pawn Method override due to En Passant
-      // King Method override due to Clastling
-      switch (true) {
-        case this.selectedPiece instanceof Pawn:
-        case this.selectedPiece instanceof King:
-          isMoveValid = this.selectedPiece.isValidMove(
-            this.board,
-            destCoords,
-            this.specialMove
-          );
-          break;
-        default:
-          isMoveValid = this.selectedPiece.isValidMove(this.board, destCoords);
-          break;
-      }
-    }
 
-    if (hasLoS && isMoveValid) {
+    // Checks if the movement is valid - accordingly with each Piece Rule
+    if (this.isMoveAllowed(this.selectedPiece, destCoords)) {
       // En Passant Treatment
       if (
         this.selectedPiece instanceof Pawn &&
@@ -247,20 +218,33 @@ export default class Chess {
         this.specialMove.piece != null
       ) {
         let castlingDirection;
-        if (this.selectedPiece.position.column - destCoords.column > 0)
-          castlingDirection = APP_CONSTS.CASTLE_LEFT;
-        else castlingDirection = APP_CONSTS.CASTLE_RIGHT;
+        const CASTLING_DIRECTION =
+          (destCoords.column - this.selectedPiece.position.column) /
+          Math.abs(destCoords.column - this.selectedPiece.position.column);
+
         // Get the Rook
-        let rookCastle;
-        castlingDirection
-          ? (rookCastle = this.board[destCoords.row][destCoords.column + 1])
-          : (rookCastle = this.board[destCoords.row][destCoords.column - 1]);
+        let rookCastle =
+          this.board[destCoords.row][destCoords.column + CASTLING_DIRECTION];
+        // Check if Path is checked
+        let isPathChecked = false;
+        let columnIndex =
+          this.selectedPiece.position.column + CASTLING_DIRECTION;
+        while (columnIndex != rookCastle.position.column) {
+          isPathChecked = this.isPositionChecked(
+            new Coords(destCoords.row, columnIndex),
+            this.playerTurn
+          );
+          if (isPathChecked) {
+            this.specialMove.piece = null;
+            alert("Castling path is checked.");
+            return false;
+          }
+          columnIndex += CASTLING_DIRECTION;
+        }
         // Clear the Rook square
         this.board[rookCastle.position.row][rookCastle.position.column] = null;
         // Update the Rook Position
-        rookCastle.position.column = castlingDirection
-          ? destCoords.column - 1
-          : destCoords.column + 1;
+        rookCastle.position.column = destCoords.column - CASTLING_DIRECTION;
         // Moves the Rook
         this.board[rookCastle.position.row][rookCastle.position.column] =
           rookCastle;
@@ -421,26 +405,28 @@ export default class Chess {
 
     // Iterate through black pieces if the selected piece belongs to the black team
     if (this.selectedPiece.team === APP_CONSTS.BLACK) {
-      this.blackPieces.forEach((piece) => {
+      this.blackPieces.some((piece) => {
         if (
           piece.constructor === this.selectedPiece.constructor &&
           piece.position !== this.selectedPiece.position
         ) {
           theOtherPiece = piece;
-          return;
+          return true;
         }
+        return false;
       });
     }
     // Iterate through white pieces if the selected piece belongs to the white team
     if (this.selectedPiece.team === APP_CONSTS.WHITE) {
-      this.whitePieces.forEach((piece) => {
+      this.whitePieces.some((piece) => {
         if (
           piece.constructor === this.selectedPiece.constructor &&
           piece.position !== this.selectedPiece.position
         ) {
           theOtherPiece = piece;
-          return;
+          return true;
         }
+        return false;
       });
     }
     // If no other piece of the same type on the opposite team was found, return false
@@ -458,5 +444,75 @@ export default class Chess {
           destCoords
         )
       );
+  }
+
+  /**
+   * Checks if a position on the board is under threat by any opponent's piece.
+   * @param {Coords} coords - The coordinates of the position to check.
+   * @param {APP_CONSTS.WHITE | APP_CONSTS.BLACK} team - The team color whose king's position is being checked.
+   * @returns {boolean} True if the position is under threat, otherwise false.
+   */
+  isPositionChecked(coords, team) {
+    let hasCheck = false;
+    if (team === APP_CONSTS.BLACK) {
+      hasCheck = this.whitePieces.some((piece) =>
+        this.isMoveAllowed(piece, coords)
+      );
+    } else {
+      hasCheck = this.blackPieces.some((piece) =>
+        this.isMoveAllowed(piece, coords)
+      );
+    }
+    return hasCheck;
+  }
+
+  /**
+   * Checks if a piece can move to the specified coordinates.
+   * Equals to each Piece isValidMove
+   * However its needs to exist due to Check verification
+   * @param {Piece} piece - The piece to check if its move is allowed.
+   * @param {Coords} coords - The coordinates to check if the piece can move to.
+   * @returns {boolean} True if the move is allowed, otherwise false.
+   */
+  isMoveAllowed(piece, coords) {
+    // Pawn Method override due to En Passant
+    if (piece instanceof Pawn) {
+      if (piece.isValidMove(this.board, coords, this.specialMove)) return true;
+      // King Method override due to Clastling
+    } else if (piece instanceof King) {
+      if (
+        piece.isValidMove(
+          this.board,
+          coords,
+          this.specialMove,
+          this.isPositionChecked
+        ) &&
+        !this.isPositionChecked(coords, this.playerTurn)
+      )
+        return true;
+      // Rest of the pieces
+    } else if (piece.isValidMove(this.board, coords)) return true;
+
+    // Move not allowed
+    return false;
+  }
+
+  /**
+   * Function that sets a new selected piece.
+   * @param {Piece} piece - The piece the player wants to select.
+   * @returns {boolean} True if the piece is seleced, otherwise false.
+   */
+  selectNewPiece(piece) {
+    if (piece.team === this.playerTurn) {
+      this.selectedPiece = piece;
+      this.updateMoveGuide();
+      if (piece instanceof King) {
+        this.moveGuide = this.moveGuide.filter(
+          (coord) => !this.isPositionChecked(coord, this.playerTurn)
+        );
+      }
+      return true;
+    }
+    return false;
   }
 }

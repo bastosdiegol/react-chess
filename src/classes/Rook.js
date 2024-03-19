@@ -46,6 +46,9 @@ export default class Rook extends Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    */
   isValidMove(board, destCoords) {
+    // Validates Line of Sight
+    if (!this.hasLineOfSight(board, this.position, destCoords)) return false;
+
     if (
       (this.position.row === destCoords.row ||
         this.position.column === destCoords.column) &&

@@ -28,6 +28,9 @@ export default class Bishop extends Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    */
   isValidMove(board, destCoords) {
+    // Validates Line of Sight
+    if (!this.hasLineOfSight(board, this.position, destCoords)) return false;
+
     if (
       Math.abs(this.position.row - destCoords.row) ===
         Math.abs(this.position.column - destCoords.column) &&

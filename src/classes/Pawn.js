@@ -31,6 +31,9 @@ export default class Pawn extends Piece {
    * @returns {boolean} Movement is possible or not.
    */
   isValidMove(board, destCoords, specialMove) {
+    // Validates Line of Sight
+    if (!this.hasLineOfSight(board, this.position, destCoords)) return false;
+
     const FORWARD_DIRECTION = this.team === APP_CONSTS.BLACK ? 1 : -1;
 
     // One-Square Advance

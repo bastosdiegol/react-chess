@@ -47,6 +47,13 @@ export default class King extends Piece {
    * @param {Coords} destCoords - Destination coordinates of Piece Movement.
    */
   isValidMove(board, destCoords, specialMove) {
+    // Validates Line of Sight
+    if (!this.hasLineOfSight(board, this.position, destCoords)) return false;
+
+    const MOVE_DIRECTION =
+      (destCoords.column - this.position.column) /
+      Math.abs(destCoords.column - this.position.column);
+
     if (
       Math.abs(this.position.row - destCoords.row) <= 1 &&
       Math.abs(this.position.column - destCoords.column) <= 1 &&
@@ -56,11 +63,10 @@ export default class King extends Piece {
       return true;
     } else if (
       !this.hasMoved &&
-      ((board[destCoords.row][destCoords.column + 1] instanceof Rook &&
-        !board[destCoords.row][destCoords.column + 1].hasMoved) ||
-        (board[destCoords.row][destCoords.column - 1] instanceof Rook &&
-          !board[destCoords.row][destCoords.column - 1].hasMoved &&
-          board[destCoords.row][destCoords.column] === null))
+      board[destCoords.row][destCoords.column + MOVE_DIRECTION] instanceof
+        Rook &&
+      !board[destCoords.row][destCoords.column + MOVE_DIRECTION].hasMoved &&
+      board[destCoords.row][destCoords.column] === null
     ) {
       specialMove.piece = this;
       return true;

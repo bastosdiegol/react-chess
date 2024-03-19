@@ -36,9 +36,8 @@ export default function Chessboard(props){
             return;
         const updatedChess = new Chess();
         Object.assign(updatedChess, chess);
-        updatedChess.selectedPiece = updatedChess.board[row][column];
-        updatedChess.updateMoveGuide();
-        setChess(updatedChess);
+        if(updatedChess.selectNewPiece(updatedChess.board[row][column]))
+            setChess(updatedChess);
     }
 
     /**
