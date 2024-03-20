@@ -4,6 +4,7 @@ import Chess from '../classes/Chess.js';
 import Chessboard from './Chessboard.jsx';
 import '../styles/App.css';
 import Localization from './Localization.jsx';
+import MoveHistory from './MoveHistory.jsx';
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
   const [localeData, setLocaleData] = useState(null);
   // Locale options list
   const [localeOptions, setLocaleOptions] = useState(null);
+  // Move History
+  const [moveHistory, setMoveHistory] = useState([]);
 
   function newGame(){
     if(confirm("Are you sure you want to start a new game?")) {
@@ -46,7 +49,11 @@ function App() {
                     moveGuide={moveGuide} setMoveGuide={setMoveGuide} setNewGame={newGame}
                     localization={localization} locale={locale} setLocale={setLocale} 
                     localeData={localeData} setLocaleData={setLocaleData} localeOptions={localeOptions}  />
-            <Chessboard chess={chess} setChess={setChess} moveGuide={moveGuide} localeData={localeData} />
+            <div className='game-container'>
+              <Chessboard chess={chess} setChess={setChess} moveGuide={moveGuide} 
+                          setMoveHistory={setMoveHistory} localeData={localeData} />
+              <MoveHistory moveHistory={moveHistory} localeData={localeData} />
+            </div>
           </>
       ) }
     </>

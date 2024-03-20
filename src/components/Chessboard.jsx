@@ -24,7 +24,7 @@ import APP_CONSTS from '../constants.js';
  */
 export default function Chessboard(props){
 
-    const { chess, setChess, moveGuide, localeData } = props;
+    const { chess, setChess, moveGuide, setMoveHistory, localeData } = props;
 
     /**
      * Function to select a new piece on the board.
@@ -36,8 +36,10 @@ export default function Chessboard(props){
             return;
         const updatedChess = new Chess();
         Object.assign(updatedChess, chess);
-        if(updatedChess.selectNewPiece(updatedChess.board[row][column]))
+        if(updatedChess.selectNewPiece(updatedChess.board[row][column])){
             setChess(updatedChess);
+            setMoveHistory(updatedChess.moveLog);
+        }
     }
 
     /**
