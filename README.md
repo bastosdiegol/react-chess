@@ -2,6 +2,8 @@
 
 This is my first project using React Framework.
 
+This Chess Game is deployed at: https://bastosdiegol.github.io/react-chess/
+
 Project Characteristics:
 
 <ul>
