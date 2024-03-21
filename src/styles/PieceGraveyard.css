@@ -1,0 +1,38 @@
+:root {
+  --square-side: 80px;
+  --img-side: 60px;
+  --board-border: 5px solid #8b4513;
+  --white-square-color: #f0d9b5;
+  --black-square-color: #b58863;
+  --selected-square-border: 5px solid #50c878;
+  --guide-square-background-mix: #6bbbe3;
+}
+
+.graveyard {
+  display: flex;
+  flex-direction: column;
+}
+
+.graveyard p {
+  font-size: 1.4rem;
+}
+
+.graveyard-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 160px;
+  min-height: 510px;
+  height: auto;
+  border: var(--board-border);
+  background-color: var(--white-square-color);
+  padding: 10px;
+  gap: 10px;
+}
+
+.piece-img {
+  position: static;
+  width: var(--img-side);
+  height: var(--img-side);
+}

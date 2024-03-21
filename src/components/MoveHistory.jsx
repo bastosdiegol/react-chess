@@ -10,9 +10,13 @@ export default function MoveHistory(props){
     for (let i = 0; i < moveHistory.length; i+=2) {
         const roundElements = (
             <div className="hist-row-wrapper" key={i}>
-                <div className="turn">{turn}.</div>
-                <div className="white-turn">{moveHistory[i]}</div>
-                <div className="black-turn">{moveHistory[i + 1]}</div>
+                <div className="turn"><p>{turn}.</p></div>
+                <div class="piece-column">
+                    <div className="white-turn"><p>{moveHistory[i]}</p></div>
+                </div>
+                <div class="piece-column">
+                    <div className="black-turn"><p>{moveHistory[i + 1]}</p></div>
+                </div>
             </div>
         );
         moveHistoryElements.push(roundElements);
@@ -21,10 +25,17 @@ export default function MoveHistory(props){
 
     return (
         <div className="move-history">
-            <div className="move-history-header">
-                <div className="turn">{localeData.move_turn}</div>
-                <div className="white-turn">{localeData.pieces_white}</div>
-                <div className="black-turn">{localeData.pieces_black}</div>
+            <div className="hist-row-wrapper">
+                <p>{localeData.move_history}</p>
+            </div>
+            <div className="hist-row-wrapper">
+                <div className="turn"><p>{localeData.move_turn}</p></div>
+                <div class="piece-column">
+                    <div className="white-turn"><p>{localeData.team_white}</p></div>
+                </div>
+                <div class="piece-column">
+                    <div className="black-turn"><p>{localeData.team_black}</p></div>
+                </div>
             </div>
             {moveHistoryElements}
         </div>

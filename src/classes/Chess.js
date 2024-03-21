@@ -33,6 +33,8 @@ export default class Chess {
     this.moveGuide = [];
     this.specialMove = { piece: null };
     this.moveLog = [];
+    this.whitePiecesGraveyard = [];
+    this.blackPiecesGraveyard = [];
   }
 
   /**
@@ -45,6 +47,9 @@ export default class Chess {
     this.whitePieces = [];
     this.moveGuide = [];
     this.specialMove = { piece: null };
+    this.moveLog = [];
+    this.whitePiecesGraveyard = [];
+    this.blackPiecesGraveyard = [];
 
     const BLACK_MAIN_PIECES = [
       { symbol: APP_CONSTS.ROOK_BLACK, name: "Black Rook" },
@@ -265,12 +270,14 @@ export default class Chess {
           this.whitePieces.findIndex((item) => item === enemyPiece),
           1
         );
+        this.whitePiecesGraveyard.push(enemyPiece);
         hasTaking = true;
       } else if (enemyPiece !== null && enemyPiece.team === APP_CONSTS.BLACK) {
         this.blackPieces.splice(
           this.blackPieces.findIndex((item) => item === enemyPiece),
           1
         );
+        this.blackPiecesGraveyard.push(enemyPiece);
         hasTaking = true;
       }
       // Log Move

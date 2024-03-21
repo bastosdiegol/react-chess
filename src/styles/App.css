@@ -1,4 +1,11 @@
 .game-container {
   display: flex;
   gap: 15px;
+  margin-left: 10px;
+}
+
+.boards-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }

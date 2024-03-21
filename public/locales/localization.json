@@ -43,7 +43,9 @@
         "theme_grey": "Minimalistic Grey",
         "theme_light" : "Light",
         "theme_blue": "Modern Blue",
-        "theme_green": "Elegant Green"
+        "theme_green": "Elegant Green",
+        "captured": "Captured",
+        "move_history": "Movement History"
     },
     "Portuguese": {
         "title" : "Jogo de Xadrez React",
@@ -89,7 +91,9 @@
         "theme_grey": "Cinza Minimalista",
         "theme_light": "Claro",
         "theme_blue": "Azul Moderno",
-        "theme_green": "Verde Elegante"
+        "theme_green": "Verde Elegante",
+        "captured": "Capturadas",
+        "move_history": "Histórico de Movimento"
     },
     "Spanish": {
         "title" : "Juego de Ajedrez en React",
@@ -135,7 +139,9 @@
         "theme_grey": "Gris Minimalista",
         "theme_light": "Claro",
         "theme_blue": "Azul Moderno",
-        "theme_green": "Verde Elegante"
+        "theme_green": "Verde Elegante",
+        "captured": "Capturadas",
+        "move_history": "Historial de Movimientos"
     },
     "French": {
         "title" : "Jeu d'échecs React",
@@ -181,7 +187,9 @@
         "theme_grey": "Gris Minimaliste",
         "theme_light": "Clair",
         "theme_blue": "Bleu Moderne",
-        "theme_green": "Vert Élégant"
+        "theme_green": "Vert Élégant",
+        "captured": "Capturées",
+        "move_history": "Historique des Mouvements"
     },
     "Russian": {
         "title" : "Игра в шахматы на React",
@@ -227,6 +235,56 @@
         "theme_grey": "Минималистичный серый",
         "theme_light": "Светлая",
         "theme_blue": "Современный синий",
-        "theme_green": "Элегантный зелёный"
+        "theme_green": "Элегантный зелёный",
+        "captured": "Захваченные",
+        "move_history": "История ходов"
+    },
+    "Korean": {
+        "title": "리액트 체스 게임",
+        "language": "언어",
+        "player": "플레이어",
+        "image": "이미지",
+        "move_turn": "턴",
+        "move_check": "체크",
+        "move_checkmate": "체크메이트",
+        "move_castling": "캐슬링",
+        "move_en_passant": "앙파상",
+        "move_taking": "잡기",
+        "pieces_black": "검은 말",
+        "pieces_white": "흰색 말",
+        "team_black": "검은 색",
+        "team_white": "흰색",
+        "piece_pawn": "폰",
+        "piece_rook": "룩",
+        "piece_knight": "나이트",
+        "piece_bishop": "비숍",
+        "piece_queen": "퀸",
+        "piece_king": "킹",
+        "pieces": {
+            "r": "검은 룩",
+            "n": "검은 나이트",
+            "b": "검은 비숍",
+            "q": "검은 퀸",
+            "k": "검은 킹",
+            "p": "검은 폰",
+            "R": "흰색 룩",
+            "N": "흰색 나이트",
+            "B": "흰색 비숍",
+            "Q": "흰색 퀸",
+            "K": "흰색 킹",
+            "P": "흰색 폰"
+        },
+        "new_game": "새 게임",
+        "move_helper": "움직임 도우미",
+        "board_theme": "보드 테마",
+        "theme_classic": "클래식 우드",
+        "theme_silver": "미래적 실버",
+        "theme_pastel": "파스텔",
+        "theme_grey": "미니멀 그레이",
+        "theme_light": "라이트",
+        "theme_blue": "모던 블루",
+        "theme_green": "우아한 그린",
+        "captured": "잡힌 말",
+        "move_history": "움직임 기록"
     }
 }

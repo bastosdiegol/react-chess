@@ -5,6 +5,7 @@ import Chessboard from './Chessboard.jsx';
 import '../styles/App.css';
 import Localization from './Localization.jsx';
 import MoveHistory from './MoveHistory.jsx';
+import PieceGraveyard from './PieceGraveyard.jsx';
 
 function App() {
 
@@ -28,6 +29,10 @@ function App() {
   const [localeOptions, setLocaleOptions] = useState(null);
   // Move History
   const [moveHistory, setMoveHistory] = useState([]);
+  // White Pieces Graveyard
+  const [whitePiecesGraveyard, setWhitePiecesGraveyard] = useState([]);
+  // Black Pieces Graveyard
+  const [blackPiecesGraveyard, setBlackPiecesGraveyard] = useState([]);
 
   function newGame(){
     if(confirm("Are you sure you want to start a new game?")) {
@@ -35,6 +40,9 @@ function App() {
       Object.assign(updatedChess, chess);    
       updatedChess.newGame();
       setChess(updatedChess);
+      setMoveHistory(updatedChess.moveLog)
+      setWhitePiecesGraveyard(updatedChess.whitePiecesGraveyard);
+      setBlackPiecesGraveyard(updatedChess.blackPiecesGraveyard);
     }
   }
 
@@ -50,8 +58,16 @@ function App() {
                     localization={localization} locale={locale} setLocale={setLocale} 
                     localeData={localeData} setLocaleData={setLocaleData} localeOptions={localeOptions}  />
             <div className='game-container'>
-              <Chessboard chess={chess} setChess={setChess} moveGuide={moveGuide} 
-                          setMoveHistory={setMoveHistory} localeData={localeData} />
+              <div className='boards-container'>
+                <PieceGraveyard title={localeData.captured+" "+localeData.pieces_white} 
+                                pieceGraveyard={whitePiecesGraveyard} localeData={localeData} />
+                <Chessboard chess={chess} setChess={setChess} moveGuide={moveGuide} 
+                            setMoveHistory={setMoveHistory} localeData={localeData}
+                            setWhitePiecesGraveyard={setWhitePiecesGraveyard}
+                            setBlackPiecesGraveyard={setBlackPiecesGraveyard} />
+                <PieceGraveyard title={localeData.captured+" "+localeData.pieces_black} 
+                                pieceGraveyard={blackPiecesGraveyard} localeData={localeData} />
+              </div>
               <MoveHistory moveHistory={moveHistory} localeData={localeData} />
             </div>
           </>

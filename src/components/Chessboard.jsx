@@ -1,15 +1,6 @@
 import '../styles/Chessboard.css';
-import rookWhite from "/assets/rook-white.svg";
-import knightWhite from "/assets/knight-white.svg";
-import bishopWhite from "/assets/bishop-white.svg";
-import queenWhite from "/assets/queen-white.svg";
-import kingWhite from "/assets/king-white.svg";
+import getPieceImg from '../utility';
 import pawnWhite from "/assets/pawn-white.svg";
-import rookBlack from "/assets/rook-black.svg";
-import knightBlack from "/assets/knight-black.svg";
-import bishopBlack from "/assets/bishop-black.svg";
-import queenBlack from "/assets/queen-black.svg";
-import kingBlack from "/assets/king-black.svg";
 import pawnBlack from "/assets/pawn-black.svg";
 import Chess from '../classes/Chess.js';
 import Coords from '../classes/Coords.js';
@@ -24,7 +15,8 @@ import APP_CONSTS from '../constants.js';
  */
 export default function Chessboard(props){
 
-    const { chess, setChess, moveGuide, setMoveHistory, localeData } = props;
+    const { chess, setChess, moveGuide, setMoveHistory, localeData, 
+        setWhitePiecesGraveyard, setBlackPiecesGraveyard } = props;
 
     /**
      * Function to select a new piece on the board.
@@ -52,6 +44,10 @@ export default function Chessboard(props){
         Object.assign(updatedChess, chess);
         if(updatedChess.movePiece(new Coords(destRow, destColumn))){
             setChess(updatedChess);
+            if(chess.playerTurn === APP_CONSTS.BLACK)
+                setWhitePiecesGraveyard(updatedChess.whitePiecesGraveyard);
+            else
+                setBlackPiecesGraveyard(updatedChess.blackPiecesGraveyard);
         }
     }
 
@@ -71,6 +67,10 @@ export default function Chessboard(props){
 
         if(updatedChess.movePiece(destCoords)){
             setChess(updatedChess);
+            if(chess.playerTurn === APP_CONSTS.BLACK)
+                setWhitePiecesGraveyard(updatedChess.whitePiecesGraveyard);
+            else
+                setBlackPiecesGraveyard(updatedChess.blackPiecesGraveyard);
         }
     }
 
@@ -175,27 +175,4 @@ export default function Chessboard(props){
             </div>
         </main>
     );
-}
-
-/**
- * Function to get the image URL for a chess piece.
- * @param {string} symbol - Symbol of the chess piece.
- * @returns {string|null} URL of the chess piece image or null if not found.
- */
-function getPieceImg(symbol){
-    switch (symbol) {
-        case APP_CONSTS.ROOK_BLACK: return rookBlack;
-        case APP_CONSTS.KNIGHT_BLACK: return knightBlack;
-        case APP_CONSTS.BISHOP_BLACK: return bishopBlack;
-        case APP_CONSTS.QUEEN_BLACK: return queenBlack;
-        case APP_CONSTS.KING_BLACK: return kingBlack;
-        case APP_CONSTS.PAWN_BLACK: return pawnBlack;
-        case APP_CONSTS.ROOK_WHITE: return rookWhite;
-        case APP_CONSTS.KNIGHT_WHITE: return knightWhite;
-        case APP_CONSTS.BISHOP_WHITE: return bishopWhite;
-        case APP_CONSTS.QUEEN_WHITE: return queenWhite;
-        case APP_CONSTS.KING_WHITE: return kingWhite;
-        case APP_CONSTS.PAWN_WHITE: return pawnWhite;
-        default: return null;
-    }
 }
