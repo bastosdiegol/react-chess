@@ -8,8 +8,10 @@ export default function Localization(props){
 
     const [error, setError] = useState(null);
 
+    const localizationUrl = import.meta.env.BASE_URL + 'locales/localization.json';
+
     useEffect(() => {
-        fetch('/locales/localization.json')
+        fetch(localizationUrl)
         .then(response => {
             if (!response.ok) {
               throw new Error('Failed to fetch localization data');
